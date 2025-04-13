@@ -32,6 +32,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //맵 스트럭트 종속성
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    //매퍼 클래스 생성
+    annotationProcessor 'org.mapstruct:mapstruct:1.6.3'
+    //롬복과의 충돌 방지
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 
 tasks.named('test') {
