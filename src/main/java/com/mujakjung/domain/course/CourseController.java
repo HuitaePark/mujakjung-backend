@@ -2,6 +2,7 @@ package com.mujakjung.domain.course;
 
 import com.mujakjung.domain.course.Entity.Course;
 import com.mujakjung.domain.course.Entity.CourseDetail;
+import com.mujakjung.domain.course.dto.DetailCourseResponseDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class CourseController {
         //그다음 코스에 딸린 세부코스를 조회
         List<CourseDetail> list = courseService.findDetailCourse(courseId);
         //dto에 담아서 리턴
-
-        return ResponseEntity.ok("조회 완료");
+        List<DetailCourseResponseDto> courseList = CourseMapperImpl.courseToDto(list);
+        return ResponseEntity.ok(courseList);
     }
 }
