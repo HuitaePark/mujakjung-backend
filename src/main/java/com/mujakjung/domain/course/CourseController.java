@@ -19,6 +19,8 @@ public class CourseController {
 
     private final CourseService courseService;
 
+
+
     @GetMapping
     public ResponseEntity<?> findCourse(@RequestParam Double latitude, Double longitude){
 

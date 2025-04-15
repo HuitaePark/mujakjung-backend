@@ -31,7 +31,7 @@ public class CourseDetail {
     private String name;
     private String description;
     private String imgPath;
-    private Integer like;
+    private Integer likeCount;
 
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩으로 성능 최적화
     @JoinColumn(name = "course_id")
