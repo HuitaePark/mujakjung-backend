@@ -29,7 +29,7 @@ public class CourseController {
         //그다음 코스에 딸린 세부코스를 조회
         List<CourseDetail> list = courseService.findDetailCourse(courseId);
         //dto에 담아서 리턴
-        List<DetailCourseResponseDto> courseList = CourseMapperImpl.courseToDto(list);
-        return ResponseEntity.ok(courseList);
+//       List<DetailCourseResponseDto> courseList = CourseMapperImpl.courseToDto(list);
+        return ResponseEntity.ok("courseList");
     }
 }
