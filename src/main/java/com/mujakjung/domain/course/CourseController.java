@@ -1,9 +1,8 @@
 package com.mujakjung.domain.course;
 
-import com.mujakjung.domain.course.Entity.Course;
 import com.mujakjung.domain.course.Entity.CourseDetail;
+import com.mujakjung.domain.course.dto.CourseApiResponse;
 import com.mujakjung.domain.course.dto.DetailCourseResponseDto;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
-
+    private final CourseMapper courseMapper;
 
 
     @GetMapping
-    public ResponseEntity<?> findCourse(@RequestParam Double latitude, Double longitude){
+    public ResponseEntity<?> findCourse(@RequestParam Double latitude, Double longitude) {
 
         //먼저 코스를 조회
-        Long courseId = courseService.findCourse(latitude,longitude);
+        Long courseId = courseService.findCourse(latitude, longitude);
         //그다음 코스에 딸린 세부코스를 조회
         List<CourseDetail> list = courseService.findDetailCourse(courseId);
-        //dto에 담아서 리턴
-//       List<DetailCourseResponseDto> courseList = CourseMapperImpl.courseToDto(list);
-        return ResponseEntity.ok("courseList");
+        //dto에 담는다
+        List<DetailCourseResponseDto> courseList = courseMapper.courseToDto(list);
+        //Response 생성
+        CourseApiResponse apiResponse = courseService.makeResponse(courseId,courseList);
+        return ResponseEntity.ok(apiResponse);
     }
 }

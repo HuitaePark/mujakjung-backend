@@ -29,14 +29,16 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    //맵 스트럭트 종속성
+
+    // 맵 스트럭트 API
     implementation 'org.mapstruct:mapstruct:1.6.3'
-    //매퍼 클래스 생성
-    annotationProcessor 'org.mapstruct:mapstruct:1.6.3'
-    //롬복과의 충돌 방지
+    annotationProcessor 'org.projectlombok:lombok'
+    // 맵 스트럭트 어노테이션 프로세서 (수정됨)
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    // 롬복과의 충돌 방지
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 

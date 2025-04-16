@@ -37,8 +37,7 @@ public class CourseDetail {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @OneToMany(mappedBy = "reviews", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "courseDetail", cascade = CascadeType.ALL, orphanRemoval = true)
     @BatchSize(size = 20) // N+1 문제 완화를 위한 배치 로딩 설정
     private List<Review> reviews = new ArrayList<>();
-
 }

@@ -1,6 +1,7 @@
 package com.mujakjung.domain.course.repository;
 
 import com.mujakjung.domain.course.Entity.Course;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,6 @@ public interface CourseRepository extends JpaRepository<Course,Long> {
             "ORDER BY RAND() " +
             "LIMIT 1", nativeQuery = true)
     Long findRandomCourseIdNearby(@Param("longitude") double longitude,@Param("latitude") double latitude);
+
+    Optional<Course> findById(Long id);
 }
