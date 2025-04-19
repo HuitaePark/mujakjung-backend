@@ -20,6 +20,7 @@ public class CourseController {
     private final CourseMapper courseMapper;
 
 
+    //모두 랜덤 조회
     @GetMapping
     public ResponseEntity<?> findCourse(@RequestParam Double latitude, Double longitude) {
 

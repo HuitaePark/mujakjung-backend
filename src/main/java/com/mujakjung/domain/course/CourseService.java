@@ -40,8 +40,7 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
         String courseName = course.getCourseName();
-        String region = course.getRegion().getName();
-
+        String region = course.getRegion();
         return new CourseApiResponse(courseName, region, list);
     }
 }

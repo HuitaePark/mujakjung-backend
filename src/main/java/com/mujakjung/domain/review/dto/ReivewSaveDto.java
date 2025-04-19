@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReivewSaveDto {
     private String username;
+    private String password;
     private String content;
     private LocalDateTime create_time;
 }

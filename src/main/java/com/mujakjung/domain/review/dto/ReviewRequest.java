@@ -9,5 +9,6 @@ import lombok.Getter;
 public class ReviewRequest {
     private String username;
     private String content;
+    private String password;
     private LocalDateTime create_time;
 }
