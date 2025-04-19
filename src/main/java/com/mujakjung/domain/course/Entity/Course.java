@@ -1,6 +1,5 @@
 package com.mujakjung.domain.course.Entity;
 
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
