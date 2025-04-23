@@ -4,6 +4,8 @@ import com.mujakjung.domain.course.Entity.CourseDetail;
 import com.mujakjung.domain.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.review.dto.ReivewSaveDto;
 import com.mujakjung.domain.review.dto.ReviewRequest;
+import com.mujakjung.domain.review.dto.ReviewUpdateRequest;
+import com.mujakjung.domain.review.dto.ReviewUpdatedto;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,4 +28,6 @@ public interface ReviewMapper {
         return courseDetailRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 코스입니다."));
     }
+
+    ReviewUpdatedto updateRequestToDto(ReviewUpdateRequest updateRequest);
 }
