@@ -2,7 +2,7 @@ package com.mujakjung.domain.review;
 
 import com.mujakjung.domain.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.review.dto.ReivewSaveDto;
-import com.mujakjung.domain.review.dto.ReviewUpdateRequest;
+import com.mujakjung.domain.review.dto.ReviewUpdatedto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +24,17 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    public void updateReview(Long id, ReviewUpdateRequest request) {
-        
+    public void updateReview(Long id, ReviewUpdatedto request) {
+        Review review = reviewRepository.findById(id).orElseThrow(()->new IllegalArgumentException("리뷰를 찾을수 없습니다."));
+        review.updateContent(request.getContent(),request.getUpdate_time());
+        reviewRepository.save(review);
     }
 
     public void passwordCheck(Long id, String password) {
-
+        Review review = reviewRepository.findById(id).orElseThrow(()->new IllegalArgumentException("리뷰를 찾을수 없습니다."));
+        String requestPassword = review.getPassword();
+        if(!password.equals(requestPassword)){
+            throw new IllegalArgumentException("비밀번호가 불일치 합니다.");
+        }
     }
 }

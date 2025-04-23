@@ -1,5 +1,6 @@
 package com.mujakjung.domain.review;
 
+import com.mujakjung.domain.review.dto.PasswordRequest;
 import com.mujakjung.domain.review.dto.ReivewSaveDto;
 import com.mujakjung.domain.review.dto.ReviewRequest;
 import com.mujakjung.domain.review.dto.ReviewUpdateRequest;
@@ -32,15 +33,16 @@ public class ReviewController {
         reviewService.saveReview(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 생성 성공");
     }
-    //리뷰 수정
+    //리뷰삭제
     @DeleteMapping("/review/{id}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long id){
+    public ResponseEntity<?> deleteReview(@PathVariable Long id, @RequestBody PasswordRequest request){
+        reviewService.passwordCheck(id,request.getPassword());
         reviewService.deleteReview(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("리뷰 삭제 성공");
+        return ResponseEntity.noContent().build();
     }
     //리뷰 업데이트
     @PatchMapping("/review/{id}")
-    public ResponseEntity<?> updateReview(@PathVariable Long id,ReviewUpdateRequest updateRequest){
+    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewUpdateRequest updateRequest){
         reviewService.passwordCheck(id,updateRequest.getPassword());
         ReviewUpdatedto dto = reviewMapper.updateRequestToDto(updateRequest);
         reviewService.updateReview(id,dto);

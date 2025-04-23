@@ -34,4 +34,9 @@ public class Review {
     @JoinColumn(name = "course_detail_id")
     private CourseDetail courseDetail;
 
+    public void updateContent(String content,LocalDateTime update_date){
+        this.content = content;
+        this.create_date = update_date;
+    }
+
 }
