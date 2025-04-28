@@ -25,7 +25,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final ReviewMapper reviewMapper;
 
-    @PostMapping("/review")
+    @PostMapping
     public ResponseEntity<?> saveReview(@RequestBody ReviewRequest request){
         //리퀘스트를 서비스 계층 dto로 변환
         ReivewSaveDto dto = reviewMapper.RequestToDto(request);
