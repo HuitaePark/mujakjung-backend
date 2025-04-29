@@ -1,6 +1,6 @@
 package com.mujakjung.domain.review;
 
-import com.mujakjung.domain.course.repository.CourseDetailRepository;
+import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.review.dto.ReivewSaveDto;
 import com.mujakjung.domain.review.dto.ReviewUpdatedto;
 import lombok.AllArgsConstructor;

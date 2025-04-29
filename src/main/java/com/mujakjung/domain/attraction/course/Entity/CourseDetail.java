@@ -1,4 +1,4 @@
-package com.mujakjung.domain.course.Entity;
+package com.mujakjung.domain.attraction.course.Entity;
 
 import com.mujakjung.domain.review.Review;
 import jakarta.persistence.CascadeType;

@@ -1,6 +1,8 @@
-package com.mujakjung.domain.course.Entity;
+package com.mujakjung.domain.attraction.course.Entity;
 
+import com.mujakjung.domain.attraction.Attraction;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,17 +21,8 @@ import org.hibernate.annotations.BatchSize;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String imgPath;
-    private String courseName;
-    private Double latitude;
-    private Double longitude;
-    private String region;
+@DiscriminatorValue("COURSE")
+public class Course extends Attraction {
 
     // 세부 항목과의 관계 (지연 로딩 사용)
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)

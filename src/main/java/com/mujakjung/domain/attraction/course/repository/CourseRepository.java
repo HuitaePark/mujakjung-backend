@@ -1,11 +1,10 @@
-package com.mujakjung.domain.course.repository;
+package com.mujakjung.domain.attraction.course.repository;
 
-import com.mujakjung.domain.course.Entity.Course;
+import com.mujakjung.domain.attraction.course.Entity.Course;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -18,5 +17,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Optional<Course> findById(Long id);
 
-    String findNameById(Long id);
+    @Query(value = "select c.name from Course c where c.id = :id")
+    String findNameById(@Param("id")Long id);
 }

@@ -1,4 +1,4 @@
-package com.mujakjung.domain.course.dto;
+package com.mujakjung.domain.attraction.course.dto;
 
 import java.util.List;
 

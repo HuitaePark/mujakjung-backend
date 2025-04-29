@@ -1,8 +1,8 @@
-package com.mujakjung.domain.course;
+package com.mujakjung.domain.attraction.course;
 
-import com.mujakjung.domain.course.Entity.CourseDetail;
-import com.mujakjung.domain.course.dto.CourseApiResponse;
-import com.mujakjung.domain.course.dto.DetailCourseResponseDto;
+import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.dto.CourseApiResponse;
+import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

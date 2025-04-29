@@ -1,7 +1,9 @@
 package com.mujakjung.domain.share;
 
-import com.mujakjung.domain.course.repository.CourseRepository;
+import com.mujakjung.domain.attraction.accommodation.AccmmodationRepository;
+import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
+import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
 import com.mujakjung.domain.share.dto.ShareDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,7 @@ public class ShareService {
     private final ShareRepository shareRepository;
     private final CourseRepository courseRepository;
     private final RestaurantRepository restaurantRepository;
-    private final AccommodationRepository accommodationRepository;
+    private final AccmmodationRepository accommodationRepository;
 
     public void saveAttraction(ShareDto dto) {
         Share share = findAttraction(dto);

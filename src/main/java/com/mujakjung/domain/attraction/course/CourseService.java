@@ -1,14 +1,13 @@
-package com.mujakjung.domain.course;
+package com.mujakjung.domain.attraction.course;
 
-import com.mujakjung.domain.course.Entity.Course;
-import com.mujakjung.domain.course.Entity.CourseDetail;
-import com.mujakjung.domain.course.dto.CourseApiResponse;
-import com.mujakjung.domain.course.dto.DetailCourseResponseDto;
-import com.mujakjung.domain.course.repository.CourseDetailRepository;
-import com.mujakjung.domain.course.repository.CourseRepository;
+import com.mujakjung.domain.attraction.course.Entity.Course;
+import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.dto.CourseApiResponse;
+import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
+import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
+import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class CourseService {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-        String courseName = course.getCourseName();
+        String courseName = course.getName();
         String region = course.getRegion();
         return new CourseApiResponse(courseName, region, list);
     }

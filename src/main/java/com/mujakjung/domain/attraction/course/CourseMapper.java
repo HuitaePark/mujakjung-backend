@@ -1,11 +1,10 @@
-package com.mujakjung.domain.course;
+package com.mujakjung.domain.attraction.course;
 
-import com.mujakjung.domain.course.Entity.CourseDetail;
-import com.mujakjung.domain.course.dto.DetailCourseResponseDto;
+import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface CourseMapper {

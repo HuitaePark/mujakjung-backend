@@ -1,7 +1,7 @@
 package com.mujakjung.domain.review;
 
 
-import com.mujakjung.domain.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
