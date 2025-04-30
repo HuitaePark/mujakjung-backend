@@ -19,9 +19,8 @@ import org.hibernate.annotations.BatchSize;
 @Getter
 @Entity
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @DiscriminatorValue("COURSE")
+@AllArgsConstructor
 public class Course extends Attraction {
 
     // 세부 항목과의 관계 (지연 로딩 사용)

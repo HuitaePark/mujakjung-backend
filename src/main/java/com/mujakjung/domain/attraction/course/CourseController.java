@@ -21,11 +21,11 @@ public class CourseController {
 
 
     //모두 랜덤 조회
-    @GetMapping
-    public ResponseEntity<?> findCourse(@RequestParam Double latitude, Double longitude) {
+    @GetMapping("/random")
+    public ResponseEntity<?> findCourse() {
 
         //먼저 코스를 조회
-        Long courseId = courseService.findCourse(latitude, longitude);
+        Long courseId = courseService.findCourse();
         //그다음 코스에 딸린 세부코스를 조회
         List<CourseDetail> list = courseService.findDetailCourse(courseId);
         //dto에 담는다
