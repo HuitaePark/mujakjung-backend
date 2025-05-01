@@ -14,7 +14,6 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
 
-    @Mapping(target = "courseId", ignore = true)
     ReivewSaveDto RequestToDto(ReviewRequest request);
 
     @Mapping(target = "id", ignore = true)

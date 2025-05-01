@@ -22,16 +22,31 @@ public class CourseController {
 
     //모두 랜덤 조회
     @GetMapping("/random")
-    public ResponseEntity<?> findCourse() {
-
-        //먼저 코스를 조회
-        Long courseId = courseService.findCourse();
-        //그다음 코스에 딸린 세부코스를 조회
-        List<CourseDetail> list = courseService.findDetailCourse(courseId);
-        //dto에 담는다
-        List<DetailCourseResponseDto> courseList = courseMapper.courseToDto(list);
-        //Response 생성
-        CourseApiResponse apiResponse = courseService.makeResponse(courseId,courseList);
+    public ResponseEntity<CourseApiResponse> findRandomCourse() {
+        CourseApiResponse apiResponse = courseService.findCourse();
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/mbti")
+    public ResponseEntity<CourseApiResponse> findMbtiCourse(@RequestParam String mbti){
+
+    }
+
+
+    @GetMapping("/region")
+    public ResponseEntity<CourseApiResponse> findRegoinCourse(@RequestParam String Region){
+
+    }
+
+    @GetMapping("/summer")
+    public ResponseEntity<CourseApiResponse> findSummerCourse(){
+
+    }
+
+    @GetMapping("/winter")
+    public ResponseEntity<CourseApiResponse> findWinterCourse(){
+
+    }
+
+
 }

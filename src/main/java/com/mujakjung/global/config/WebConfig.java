@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST","FETCH","PUT","DELETE") // 허용할 HTTP method
-                .allowCredentials(true); // 쿠키 인증 요청 허용
+                .allowCredentials(true)
+                .allowedHeaders("*");
     }
 }

@@ -34,14 +34,14 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body("리뷰 생성 성공");
     }
     //리뷰삭제
-    @DeleteMapping("/review/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReview(@PathVariable Long id, @RequestBody PasswordRequest request){
         reviewService.passwordCheck(id,request.getPassword());
         reviewService.deleteReview(id);
         return ResponseEntity.noContent().build();
     }
     //리뷰 업데이트
-    @PatchMapping("/review/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewUpdateRequest updateRequest){
         reviewService.passwordCheck(id,updateRequest.getPassword());
         ReviewUpdatedto dto = reviewMapper.updateRequestToDto(updateRequest);

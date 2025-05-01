@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ReviewRequest {
+    private Long courseId;
     private String username;
     private String content;
     private String password;
