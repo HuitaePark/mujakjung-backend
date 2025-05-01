@@ -1,9 +1,10 @@
 package com.mujakjung.domain.attraction.course.dto;
 
+import com.mujakjung.global.enums.Region;
 import java.util.List;
 
 public record CourseApiResponse(String courseName,
-                                String region,
+                                Region region,
                                 Double latitude,
                                 Double longitude,
                                 List<DetailCourseResponseDto> list){

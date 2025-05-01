@@ -28,4 +28,12 @@ public enum Region {
         this.name = name;
     }
 
+    public static Region fromString(String regionName) {
+        for (Region region : Region.values()) {
+            if (region.getName().equals(regionName)) {
+                return region;
+            }
+        }
+        throw new IllegalArgumentException("Unknown region: " + regionName);
+    }
 }

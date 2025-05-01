@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
-    private final CourseMapper courseMapper;
 
 
     //모두 랜덤 조회
@@ -28,24 +27,23 @@ public class CourseController {
     }
 
     @GetMapping("/mbti")
-    public ResponseEntity<CourseApiResponse> findMbtiCourse(@RequestParam String mbti){
-
+    public ResponseEntity<CourseApiResponse> findMbtiCourse(@RequestParam String type){
+        CourseApiResponse apiResponse = courseService.findMbtiCourse(type);
+        return ResponseEntity.ok(apiResponse);
     }
 
 
     @GetMapping("/region")
-    public ResponseEntity<CourseApiResponse> findRegoinCourse(@RequestParam String Region){
-
+    public ResponseEntity<CourseApiResponse> findRegoinCourse(@RequestParam String region){
+        CourseApiResponse apiResponse = courseService.findRegionCourse(region);
+        return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/summer")
-    public ResponseEntity<CourseApiResponse> findSummerCourse(){
 
-    }
-
-    @GetMapping("/winter")
-    public ResponseEntity<CourseApiResponse> findWinterCourse(){
-
+    @GetMapping("/season")
+    public ResponseEntity<CourseApiResponse> findSummerCourse(@RequestParam String season){
+        CourseApiResponse apiResponse = courseService.findSummerCourse(season);
+        return ResponseEntity.ok(apiResponse);
     }
 
 
