@@ -4,6 +4,7 @@ import com.mujakjung.domain.attraction.accommodation.AccommodationRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
+import com.mujakjung.domain.share.dto.HotAttractionDto;
 import com.mujakjung.domain.share.dto.ShareDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ public class ShareService {
     public void saveAttraction(ShareDto dto) {
         Share share = findAttraction(dto);
         shareRepository.save(share);
+    }
+    public HotAttractionDto findHotAttraction(){
+        //쉐어 테이블에서 카운트로 가장 많은 객체를 찾음
+
+        //찾은 객체들을 각 테이블 가서 조회함
+        //dto로 변환후 컨트롤러로 전달
     }
     private Share findAttraction(ShareDto dto){
 
@@ -44,5 +51,6 @@ public class ShareService {
             default -> throw new IllegalStateException("Unexpected value: " + type);
         };
     }
+
 
 }

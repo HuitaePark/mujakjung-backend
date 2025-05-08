@@ -30,7 +30,6 @@ public class ShareController {
     public ResponseEntity<?> getPopular(){
         //레디스에 올라가 있을경우 레디스에서 가져옴
         //레디스에 없거나 올라간게 ttl되면 새로 조회
-
         return ResponseEntity.ok(response);
     }
 }
