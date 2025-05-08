@@ -1,6 +1,6 @@
 package com.mujakjung.domain.share;
 
-import com.mujakjung.domain.attraction.accommodation.AccmmodationRepository;
+import com.mujakjung.domain.attraction.accommodation.AccommodationRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
@@ -14,7 +14,7 @@ public class ShareService {
     private final ShareRepository shareRepository;
     private final CourseRepository courseRepository;
     private final RestaurantRepository restaurantRepository;
-    private final AccmmodationRepository accommodationRepository;
+    private final AccommodationRepository accommodationRepository;
 
     public void saveAttraction(ShareDto dto) {
         Share share = findAttraction(dto);

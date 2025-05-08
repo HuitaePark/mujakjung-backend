@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ResponseUtil {
-    private String theme;
+    private String attract;
     private List<RestaurantApiResponse> list;
 }
