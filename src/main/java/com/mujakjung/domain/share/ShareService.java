@@ -1,5 +1,6 @@
 package com.mujakjung.domain.share;
 
+import com.mujakjung.domain.attraction.accommodation.Accommodation;
 import com.mujakjung.domain.attraction.accommodation.AccommodationRepository;
 import com.mujakjung.domain.attraction.course.CourseMapper;
 import com.mujakjung.domain.attraction.course.Entity.Course;
@@ -8,6 +9,7 @@ import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
+import com.mujakjung.domain.attraction.restaurant.Restaurant;
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotAttractionDto;
@@ -40,8 +42,6 @@ public class ShareService {
         //쉐어 테이블에서 원하는 타입을 카운트로 가장 많은 객체를 찾음
         Long attractionId = shareRepository.findTopAttractionIdByType(type);
         //type으로 맵 조회해서 메소드로 엔티티 반환
-
-
         //return handler.get(type);
     }
     private HotCourseDto findHotCourse(Long attractionId){
@@ -49,17 +49,15 @@ public class ShareService {
         List<HotDetailCourseResponseDto> courseList = shareMapper.courseToDto(list);
         Course course = courseRepository.findById(attractionId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-
-        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
-                courseList);
+        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(), courseList);
     }
-    private HotAccommodationDto findHotAccommodate(Long attractionId){
-
-
+    private HotAccommodationDto findHotAccommodation(Long attractionId){
+        Accommodation accommodation = accommodationRepository.findById(attractionId).orElseThrow(() -> new IllegalArgumentException("없는 숙소입니다."));
+        return shareMapper.accommodationToDto(accommodation);
     }
     private HotRestaurantDto findHotRestaurant(Long attractionId){
-
-
+        Restaurant restaurant = restaurantRepository.findById(attractionId).orElseThrow(()->new IllegalArgumentException("없는 식당입니다."));
+        return shareMapper.restaurantToDto(restaurant);
     }
 
     private Share findAttraction(ShareDto dto){
