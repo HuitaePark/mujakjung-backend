@@ -61,6 +61,12 @@ public class ShareService {
         return handler.apply(attractionId);
     }
 
+    public void updateAttractionData(String type){
+
+    }
+
+
+
     private HotCourseDto findHotCourse(Long attractionId){
         List<CourseDetail> list = courseDetailRepository.findByCourseId(attractionId);
         List<HotDetailCourseResponseDto> courseList = shareMapper.courseToDto(list);

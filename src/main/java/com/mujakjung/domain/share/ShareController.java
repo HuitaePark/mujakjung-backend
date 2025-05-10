@@ -2,6 +2,7 @@ package com.mujakjung.domain.share;
 
 
 import com.mujakjung.domain.share.dto.ShareDto;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShareController {
 
     private final ShareService shareService;
+    private static final String[] ALLOWED_TYPES ={"RESTAURANT","ACCOMMODATION","COURSE"};
+
 
     @PostMapping//공유 데이터 저장
     public ResponseEntity<?> saveShare(
@@ -28,8 +31,8 @@ public class ShareController {
     }
     @GetMapping("/hot")
     public ResponseEntity<?> getPopular(){
-        //레디스에 올라가 있을경우 레디스에서 가져옴
-        //레디스에 없거나 올라간게 ttl되면 새로 조회
+
+
         return ResponseEntity.ok(response);
     }
 }
