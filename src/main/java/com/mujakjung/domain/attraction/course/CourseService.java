@@ -43,6 +43,7 @@ public class CourseService {
     public CourseApiResponse findMbtiCourse(String type) {
 
         MBTI mbti = MBTI.fromString(type);
+        log.info("요청받은: {}", mbti.getValue());
         Long courseId = courseRepository.findMbtiCourseId(mbti.getValue());
         log.info("MBTI 코스 선택 결과: {}", courseId);
 
@@ -58,8 +59,7 @@ public class CourseService {
      */
     public CourseApiResponse findRegionCourse(String area) {
 
-        Region region = Region.fromString(area);
-        Long courseId = courseRepository.findRegionCourseId(region.getName());
+        Long courseId = courseRepository.findRegionCourseId(area);
         log.info("지역 코스 선택 결과: {}", courseId);
 
         //dto들의 리스트로 변환후 json으로 만들어서 반환

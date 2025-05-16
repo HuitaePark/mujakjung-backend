@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum MBTI {
-    STJ("ISTJ"),
+    ISTJ("ISTJ"),
     ISFJ("ISFJ"),
     INFJ("INFJ"),
     INTJ("INTJ"),

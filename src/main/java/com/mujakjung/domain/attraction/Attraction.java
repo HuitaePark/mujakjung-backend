@@ -32,8 +32,7 @@ public abstract class Attraction {
     private Double latitude;
     private Double longitude;
 
-    @Enumerated(EnumType.STRING)
-    private Region region;
+    private String region;
 
     @Enumerated(EnumType.STRING)
     private MBTI mbti;

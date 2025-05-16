@@ -34,7 +34,7 @@ jobs:
       - name: Docker 이미지 빌드 및 푸시
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/arm64 -t heetea3174/wait:latest --push .
+          docker buildx build --platform linux/arm64 -t heetea3174/mujakjung:latest --push .
 
 
       # 서버 SSH 접속 후 docker-compose 배포

@@ -2,6 +2,7 @@ package com.mujakjung.domain.attraction.restaurant;
 
 
 import com.mujakjung.domain.attraction.Attraction;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @DiscriminatorValue("RESTAURANT")
 public class Restaurant extends Attraction {
-    private String adress;
+    @Column(name = "address")
+    private String address;
     private String websiteLink;
 }
