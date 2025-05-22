@@ -3,9 +3,11 @@ package com.mujakjung.domain.review;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.review.dto.ReivewSaveDto;
+import com.mujakjung.domain.review.dto.ReviewDto;
 import com.mujakjung.domain.review.dto.ReviewRequest;
 import com.mujakjung.domain.review.dto.ReviewUpdateRequest;
 import com.mujakjung.domain.review.dto.ReviewUpdatedto;
+import java.util.List;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,4 +31,5 @@ public interface ReviewMapper {
     }
 
     ReviewUpdatedto updateRequestToDto(ReviewUpdateRequest updateRequest);
+    ReviewDto toDto(Review reviews);
 }

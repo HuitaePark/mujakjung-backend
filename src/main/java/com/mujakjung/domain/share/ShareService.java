@@ -9,6 +9,8 @@ import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
 import com.mujakjung.domain.attraction.restaurant.Restaurant;
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
+import com.mujakjung.domain.review.Review;
+import com.mujakjung.domain.review.ReviewRepository;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotAttractionDto;
 import com.mujakjung.domain.share.dto.HotCourseDto;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +38,7 @@ public class ShareService {
     private final ShareMapper shareMapper;
 
     private final Map<String, Function<Long, HotAttractionDto>> handlerMap = new HashMap<>();
+    private final ReviewRepository reviewRepository;
 
     @PostConstruct
     private void initFunctionMap() {
@@ -72,7 +76,8 @@ public class ShareService {
         List<HotDetailCourseResponseDto> courseList = shareMapper.courseToDto(list);
         Course course = courseRepository.findById(attractionId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(), courseList);
+        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
+                course.getImgPath(), courseList);
     }
 
     private HotAccommodationDto findHotAccommodation(Long attractionId){

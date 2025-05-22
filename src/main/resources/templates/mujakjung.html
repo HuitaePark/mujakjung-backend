@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무작정 랜덤여행하기!</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#A2D2FC',
+                        'primary-dark': '#8BB9E0',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<script
+        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"
+        integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6"
+        crossorigin="anonymous"
+></script>
+<header class="page-header">
+    무작정 랜덤여행하기!
+    <span id="info-btn" class="float-right text-sm font-normal py-1 px-2 bg-white text-black rounded cursor-pointer">설명보기</span>
+</header>
+
+<main class="pb-8">
+    <section class="p-4">
+        <p class="text-center text-gray-600 text-sm mb-4">
+            랜덤으로 여행지를 선택해보세요!<br>
+            선택된 지역에 어울리는 코스뿐만 아니라 숙소, 식당도 추천받을 수 있습니다.
+        </p>
+
+        <div class="map-container relative" style="height: 400px;">
+            <div id="vmap" class="absolute top-0 left-0 w-full h-full"></div>
+        </div>
+
+        <!-- 테마 선택 -->
+        <div class="flex flex-col md:flex-row justify-center items-start gap-4 mt-4 max-w-3xl mx-auto">
+            <select id="theme-select" class="border rounded px-4 py-2 text-sm w-full md:w-60">
+                <option value="random">모두 랜덤으로 추천받기</option>
+                <option value="region">지역별 여행지 추천받기</option>
+                <option value="season">계절별 여행지 추천받기</option>
+                <option value="mbti">MBTI별 추천받기</option>
+            </select>
+            <!-- 지역 선택 -->
+            <div id="theme-options" class="hidden flex-col gap-2 w-full md:w-60">
+                <select id="region-select" class="border rounded px-4 py-2 text-sm hidden">
+                    <option value="서울특별시">서울특별시</option>
+                    <option value="부산광역시">부산광역시</option>
+                    <option value="대구광역시">대구광역시</option>
+                    <option value="인천광역시">인천광역시</option>
+                    <option value="광주광역시">광주광역시</option>
+                    <option value="대전광역시">대전광역시</option>
+                    <option value="울산광역시">울산광역시</option>
+                    <option value="세종특별자치시">세종특별자치시</option>
+                    <option value="경기도">경기도</option>
+                    <option value="강원도">강원도</option>
+                    <option value="충청북도">충청북도</option>
+                    <option value="충청남도">충청남도</option>
+                    <option value="전라북도">전라북도</option>
+                    <option value="전라남도">전라남도</option>
+                    <option value="경상북도">경상북도</option>
+                    <option value="경상남도">경상남도</option>
+                    <option value="제주특별자치도">제주특별자치도</option>
+
+                </select>
+                <!-- 계절 선택 -->
+                <select id="season-select" class="border rounded px-4 py-2 text-sm hidden">
+                    <option value="spring">봄</option>
+                    <option value="summer">여름</option>
+                    <option value="autumn">가을</option>
+                    <option value="winter">겨울</option>
+                </select>
+                <!-- MBTI 선택 -->
+                <select id="mbti-select" class="border rounded px-4 py-2 text-sm hidden">
+                    <option value="INTJ">INTJ</option>
+                    <option value="INTP">INTP</option>
+                    <option value="ENTJ">ENTJ</option>
+                    <option value="ENTP">ENTP</option>
+                    <option value="INFJ">INFJ</option>
+                    <option value="INFP">INFP</option>
+                    <option value="ENFJ">ENFJ</option>
+                    <option value="ENFP">ENFP</option>
+                    <option value="ISTJ">ISTJ</option>
+                    <option value="ISFJ">ISFJ</option>
+                    <option value="ESTJ">ESTJ</option>
+                    <option value="ESFJ">ESFJ</option>
+                    <option value="ISTP">ISTP</option>
+                    <option value="ISFP">ISFP</option>
+                    <option value="ESTP">ESTP</option>
+                    <option value="ESFP">ESFP</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button id="recommend-btn" class="btn btn-primary w-full py-2 text-sm max-w-md mx-auto block">
+                랜덤 여행지 추천
+            </button>
+        </div>
+
+        <!-- 결과 섹션: 처음엔 숨겨두고, JS에서 보여줌 -->
+        <section id="result-section" class="p-4" style="display:none;">
+            <p id="result-text" class="text-center font-bold mb-1">
+                <!-- JS가 이 안을 채워넣습니다 -->
+            </p>
+            <p class="text-center mb-4">
+                <span id="result-course" class="font-medium"></span> 한번 가보실래요?
+            </p>
+        </section>
+
+    <!-- 탭 버튼 부분 -->
+    <div class="tab-container mt-4">
+        <div id="tab-course" class="tab active">여행코스</div>
+        <div id="tab-restaurant" class="tab">식당</div>
+        <div id="tab-accommodation" class="tab">숙소</div>
+    </div>
+
+
+        <!-- Course List -->
+        <section class="p-4">
+            <section id="content-course" class="p-4">
+                <div id="course-list" class="space-y-3">
+                    <!-- JS가 여기를 지우고 <div class="card">…를 동적으로 삽입합니다 -->
+                </div>
+            </section>
+        </section>
+        <!-- 식당 -->
+        <section id="content-restaurant" class="p-4 hidden">
+            <div id="restaurant-list" class="space-y-3"></div>
+        </section>
+
+        <!-- 숙소 -->
+        <section id="content-accommodation" class="p-4 hidden">
+            <div id="accommodation-list" class="space-y-3"></div>
+        </section>
+
+        <p class="flex justify-center text-xs text-gray-500 mt-4 px-2">
+            항목을 클릭하면 네이버 지도에서 상세정보를 확인할 수 있습니다.<br>
+        </p>
+    </section>
+
+    <div class="flex justify-center">
+        <a
+                id="kakaotalk-sharing-btn"
+                class="kakao-btn inline-flex items-center justify-center px-6 py-2 gap-2 text-center"
+                href="javascript:;"
+        >
+            <img
+                    src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+                    alt="카카오톡 공유 보내기 버튼"
+                    class="h-5 w-auto"
+            />
+            카카오톡으로 결과 공유하기
+        </a>
+    </div>
+
+    <!-- hot section -->
+
+    <div class="w-full mx-auto px-4 py-6">
+        <h3 class="text-lg font-bold text-black mb-4">최근 많이 공유된 핫스팟!🔥🔥</h3>
+        <div id="Hotcontent-course" class="my-3"></div>
+        <div id="Hotcontent-restaurant" class="my-3"></div>
+        <div id="Hotcontent-accommodation" class="my-3"></div>
+    </div>
+    <!-- 설명 모달 (이미지 전용) -->
+    <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+        <div class="relative">
+            <button id="modal-close-btn" class="absolute top-2 right-2 text-white text-xl font-bold z-10">
+                ✕
+            </button>
+            <img src="/images/img.png" alt="설명 이미지" class="max-w-full max-h-[90vh] rounded-lg shadow-lg" />
+        </div>
+    </div>
+
+</main>
+<footer class="footer">
+    본 사이트는 한국관광공사 Tour API를 활용하여 만들었습니다.<br>
+    ©2025 Mujakjung. All rights reserved.
+</footer>
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeSelect   = document.getElementById('theme-select');
+        const themeOptions  = document.getElementById('theme-options');
+        const regionSelect  = document.getElementById('region-select');
+        const seasonSelect  = document.getElementById('season-select');
+        const mbtiSelect    = document.getElementById('mbti-select');
+
+        function updateThemeOptions() {
+            const v = themeSelect.value;
+            // “모두 랜덤” 선택 시 컨테이너 자체 숨기기
+            if (v === 'random') {
+                themeOptions.classList.add('hidden');
+            } else {
+                themeOptions.classList.remove('hidden');
+                // 각 옵션 셋을 모두 숨긴 뒤, 선택된 것만 보이게
+                regionSelect.classList.toggle('hidden', v !== 'region');
+                seasonSelect.classList.toggle('hidden', v !== 'season');
+                mbtiSelect.classList.toggle('hidden', v !== 'mbti');
+            }
+        }
+
+        // 선택 변경 감지
+        themeSelect.addEventListener('change', updateThemeOptions);
+        // 초기 상태 반영
+        updateThemeOptions();
+    });
+</script>
+<script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+        const infoBtn = document.getElementById('info-btn');
+        const modal = document.getElementById('info-modal');
+        const closeBtn = document.getElementById('modal-close-btn');
+
+        infoBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // 배경 누르면 닫기
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    });
+</script>
+<script src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1"></script>
+<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+<script th:src="@{/js/kakaoShare.js}" defer></script>
+<script th:src="@{/js/hotSection.js}" defer></script>
+<script th:src="@{/js/mapMarker.js}"></script>
+<script th:src="@{/js/resultTap.js}"></script>
+
+</body>
+</html>

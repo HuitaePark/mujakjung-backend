@@ -6,6 +6,7 @@ import com.mujakjung.domain.attraction.course.dto.CourseApiResponse;
 import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
+import com.mujakjung.domain.review.Review;
 import com.mujakjung.global.enums.MBTI;
 import com.mujakjung.global.enums.Region;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,7 +31,6 @@ public class CourseService {
         //랜덤으로 아무 코스나 선택
         Long courseId = courseRepository.findRandomCourseId();
         log.info("랜덤 코스 선택 결과: {}", courseId);
-
         //dto들의 리스트로 변환후 json으로 만들어서 반환
         List<DetailCourseResponseDto> courseList = courseMapper.courseToDto(findDetailCourse(courseId));
 
@@ -100,7 +100,8 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
 
-        return new CourseApiResponse(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(), list);
+        return new CourseApiResponse(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
+                course.getImgPath(), list);
     }
 
 
