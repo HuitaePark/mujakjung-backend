@@ -101,8 +101,11 @@ public class CourseService {
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
 
         return new CourseApiResponse(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
-                course.getImgPath(), list);
+                course.getImgPath(), list, list.size());
     }
+    /*
+    좋아요 버튼 기능
+     */
 
 
 }

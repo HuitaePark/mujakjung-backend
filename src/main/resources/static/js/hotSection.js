@@ -68,6 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
 `;
 
             container.appendChild(card);
+
+            // ✅ [코스일 때만] 상세보기 버튼 모달 열기
+            if (type === 'course') {
+                const btn = card.querySelector('.view-detail-btn');
+                const detail = item.list?.[0];
+                if (btn && detail) {
+                    btn.addEventListener('click', () => {
+                        console.log('핫 코스 상세보기 클릭됨');
+                        openModalList(item.list);
+                    });
+                }
+            }
         });
     }
 });

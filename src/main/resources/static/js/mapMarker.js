@@ -5,6 +5,8 @@ let defaultCenter, defaultZoom;
 let lastRegion         = null;
 let lastRestaurantList = null;
 let lastAccommodationList = null;
+let modalDetailList = [];
+let modalCurrentIndex = 0;
 const YOUR_KEY     = '44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1';
 const INITIAL_ZOOM = 6;
 const koreaBounds  = { latMin:33.0, latMax:38.5, lngMin:124.5, lngMax:131.5 };
@@ -114,7 +116,7 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                 document.getElementById('result-section').style.display = 'block';
                 const themeLabel = themeSelect.options[themeSelect.selectedIndex].text;
                 document.getElementById('result-text').innerHTML =
-                    `${themeLabel} 추천받은 결과는 <span class="text-blue-700">${data.region}</span>입니다.`;
+                    `${themeLabel} 추천받은 결과는 <br><span class="text-blue-700">${data.region}</span>입니다.`;
                 document.getElementById('result-course').textContent = data.courseName;
 
                 // --- 2) 코스 리스트 렌더링 ---
@@ -122,26 +124,35 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                 listContainer.innerHTML = '';
                 data.list.forEach(item => {
                     const card = document.createElement('div');
-                    // 'card-hot' 대신 'card' 클래스 사용
-                    card.className = 'card flex overflow-hidden'; // 변경된 부분
-
+                    card.className = 'card flex overflow-hidden';
                     card.innerHTML = `
-    <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
-    <div class="p-3 flex flex-col justify-between flex-1">
-      <div>
-        <h4 class="font-medium text-black">${item.name}</h4>
-        <p class="text-xs text-gray-500">${item.address || item.description}</p>
-        <a href="${item.websiteLink || '#'}" target="_blank" class="text-xs text-blue-500 mt-1 block">
-          웹사이트
-        </a>
+      <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
+      <div class="p-3 flex flex-col justify-between flex-1">
+        <div>
+          <h4 class="font-medium text-black">${item.name}</h4>
+          <a href="${item.websiteLink || '#'}" target="_blank" class="text-xs text-blue-500 mt-1 block">
+            웹사이트
+          </a>
+        </div>
+        <div class="text-right">
+          <button class="view-detail-btn">상세보기</button>
+        </div>
       </div>
-      <div class="text-right">
-        <button class="view-detail-btn">상세보기</button>
-      </div>
-    </div>
-  `;
+    `;
+
+                    // 🔑 appendChild 먼저! DOM에 넣고 나서 querySelector 해야 함
                     listContainer.appendChild(card);
-                })
+
+                    // ✅ DOM 삽입 후에 버튼 찾아야 정확히 잡힘
+                    const btn = card.querySelector('.view-detail-btn');
+                    if (btn) {
+                        btn.addEventListener('click', () => {
+                            openModal(item);
+                        });
+                    } else {
+                        console.warn('버튼 못 찾음 😥', card.innerHTML);
+                    }
+                });
 
                 // --- 3) 식당·숙소 API 병렬 호출 (한 번만) ---
                 const restUrl  = `/restaurant/region?region=${encodeURIComponent(lastRegion)}`;
@@ -172,4 +183,63 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
     }, 3000);
 
 
+});
+function openModalList(detailList) {
+    if (!detailList || detailList.length === 0) return;
+
+    modalDetailList = detailList;
+    modalCurrentIndex = 0;
+    renderModal(modalDetailList[modalCurrentIndex]);
+    document.getElementById('detail-modal').style.display = 'flex';
+
+    // ✅ Tailwind로 버튼 보이기
+    document.getElementById('modal-prev-btn').classList.remove('hidden');
+    document.getElementById('modal-next-btn').classList.remove('hidden');
+    document.getElementById('modal-page').classList.remove('hidden');
+
+    updateModalPageText();
+}
+function openModal(detail) {
+    document.getElementById('modal-img').src = detail.imgPath;
+    document.getElementById('modal-title').textContent = detail.name;
+    document.getElementById('modal-like').textContent = detail.like || 0;
+    document.getElementById('modal-desc').textContent = detail.description;
+    document.getElementById('detail-modal').style.display = 'flex';
+
+    // 🔒 Tailwind로 버튼 숨기기
+    document.getElementById('modal-prev-btn').classList.add('hidden');
+    document.getElementById('modal-next-btn').classList.add('hidden');
+    document.getElementById('modal-page').classList.add('hidden');
+}
+
+document.getElementById('close-modal').addEventListener('click', () => {
+    document.getElementById('detail-modal').style.display = 'none';  // hide
+});
+function renderModal(detail) {
+    document.getElementById('modal-img').src = detail.imgPath;
+    document.getElementById('modal-title').textContent = detail.name;
+    document.getElementById('modal-like').textContent = detail.like || 0;
+    document.getElementById('modal-desc').textContent = detail.description;
+}
+
+function updateModalPageText() {
+    const page = document.getElementById('modal-page');
+    page.textContent = `${modalCurrentIndex + 1} / ${modalDetailList.length}`;
+    document.getElementById('modal-prev-btn').disabled = modalCurrentIndex === 0;
+    document.getElementById('modal-next-btn').disabled = modalCurrentIndex === modalDetailList.length - 1;
+}
+document.getElementById('modal-prev-btn').addEventListener('click', () => {
+    if (modalCurrentIndex > 0) {
+        modalCurrentIndex--;
+        renderModal(modalDetailList[modalCurrentIndex]);
+        updateModalPageText();
+    }
+});
+
+document.getElementById('modal-next-btn').addEventListener('click', () => {
+    if (modalCurrentIndex < modalDetailList.length - 1) {
+        modalCurrentIndex++;
+        renderModal(modalDetailList[modalCurrentIndex]);
+        updateModalPageText();
+    }
 });

@@ -7,5 +7,6 @@ public record CourseApiResponse(String courseName,
                                 Double latitude,
                                 Double longitude,
                                 String imgPath,
-                                List<DetailCourseResponseDto> list){
+                                List<DetailCourseResponseDto> list,
+                                int size){
 }

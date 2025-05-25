@@ -79,6 +79,10 @@
             text-align: right;
             padding: 4px 8px;
             background-color: transparent;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto; /* ✅ 반드시 추가 */
+            cursor: pointer;      /* 클릭 가능한 손가락 커서 */
         }
 
         .tab-container {

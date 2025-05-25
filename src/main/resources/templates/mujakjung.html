@@ -148,6 +148,34 @@
             항목을 클릭하면 네이버 지도에서 상세정보를 확인할 수 있습니다.<br>
         </p>
     </section>
+    <!-- 상세 모달 -->
+    <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl relative">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-black text-lg font-bold">닫기</button>
+            <div class="flex flex-col md:flex-row gap-6">
+                <img id="modal-img" src="" alt="Detail Image" class="w-full md:w-1/2 h-64 object-cover rounded-lg">
+                <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <h2 id="modal-title" class="text-2xl font-bold mb-2">제목</h2>
+                        <div class="flex items-center gap-2 text-gray-600">
+                            <i class="fa-regular fa-thumbs-up"></i>
+                            <span id="modal-like">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 border-t pt-4">
+                <p id="modal-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
+                <!-- 모달 하단 -->
+                <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
+                    <button id="modal-prev-btn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-30">이전</button>
+                    <span id="modal-page">1 / 1</span>
+                    <button id="modal-next-btn" class="px-3 py-1 bg-gray-200 rounded disabled:opacity-30">다음</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <div class="flex justify-center">
         <a
@@ -172,16 +200,36 @@
         <div id="Hotcontent-restaurant" class="my-3"></div>
         <div id="Hotcontent-accommodation" class="my-3"></div>
     </div>
-    <!-- 설명 모달 (이미지 전용) -->
-    <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
-        <div class="relative">
-            <button id="modal-close-btn" class="absolute top-2 right-2 text-white text-xl font-bold z-10">
-                ✕
+    <!-- 설명 모달 -->
+    <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-[90%] relative">
+            <!-- 닫기 버튼 -->
+            <button id="modal-close-btn" class="absolute top-4 right-4 text-gray-500 hover:text-black text-lg font-bold">
+                닫기
             </button>
-            <img src="/images/img.png" alt="설명 이미지" class="max-w-full max-h-[90vh] rounded-lg shadow-lg" />
+
+            <div class="space-y-6 text-sm text-gray-700 leading-relaxed">
+                <div>
+                    <img src="/images/category.png" alt="추천 테마" class="rounded-lg mb-2 mx-auto"/>
+                    <p class="text-center">테마를 정하고 랜덤여행지 추천버튼을 누르면<br>랜덤으로 여행지를 추천해드립니다!</p>
+                </div>
+
+                <div>
+                    <img src="/images/button.png" alt="추천버튼" class="rounded-lg mb-2 mx-auto"/>
+                </div>
+
+                <div>
+                    <img src="/images/result.png" alt="코스 예시" class="rounded-lg mb-2 mx-auto"/>
+                    <p class="text-center">각 결과 항목을 클릭하면 네이버 지도 검색결과로 이동해요!</p>
+                </div>
+
+                <div class="text-center">
+                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png" alt="카카오 공유" class="inline-block mb-2"/>
+                    <p>결과를 카카오톡으로 친구나 가족에게 공유해보세요!</p>
+                </div>
+            </div>
         </div>
     </div>
-
 </main>
 <footer class="footer">
     본 사이트는 한국관광공사 Tour API를 활용하여 만들었습니다.<br>
@@ -215,33 +263,12 @@
         updateThemeOptions();
     });
 </script>
-<script defer>
-    document.addEventListener('DOMContentLoaded', () => {
-        const infoBtn = document.getElementById('info-btn');
-        const modal = document.getElementById('info-modal');
-        const closeBtn = document.getElementById('modal-close-btn');
-
-        infoBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-
-        // 배경 누르면 닫기
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    });
-</script>
 <script src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+<script defer th:src="@{/js/description.js}"></script>
+<script defer th:src="@{/js/mapMarker.js}"></script>
 <script th:src="@{/js/kakaoShare.js}" defer></script>
 <script th:src="@{/js/hotSection.js}" defer></script>
-<script th:src="@{/js/mapMarker.js}"></script>
 <script th:src="@{/js/resultTap.js}"></script>
 
 </body>
