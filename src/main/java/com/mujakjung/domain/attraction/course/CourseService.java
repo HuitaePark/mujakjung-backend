@@ -2,14 +2,17 @@ package com.mujakjung.domain.attraction.course;
 
 import com.mujakjung.domain.attraction.course.Entity.Course;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.Entity.CourseDetailLike;
 import com.mujakjung.domain.attraction.course.dto.CourseApiResponse;
 import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
+import com.mujakjung.domain.attraction.course.repository.CourseDetailLikeRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 import com.mujakjung.domain.review.Review;
 import com.mujakjung.global.enums.MBTI;
 import com.mujakjung.global.enums.Region;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -23,7 +26,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseDetailRepository courseDetailRepository;
     private final CourseMapper courseMapper;
-
+    private final CourseDetailLikeRepository likeRepo;
     /*
         랜덤 코스 조회 카테고리 메서드
     */
@@ -106,6 +109,29 @@ public class CourseService {
     /*
     좋아요 버튼 기능
      */
+    @Transactional
+    public boolean likeCourse(Long detailId,String ip){
+        //이미 좋아요 눌렀는지 체크
+        if(likeRepo.existsByCourseDetailIdAndIp(detailId,ip)){
+            return false;
+        }
+        // 로그 저장
+        CourseDetailLike log = CourseDetailLike.builder()
+                .courseDetailId(detailId)
+                .ip(ip)
+                .build();
+        likeRepo.save(log);
 
+        //좋아요 카운트
+        courseDetailRepository.plusLikeCount(detailId);
+        return true;
+    }
 
+    public long getLikeCount(Long detailId){
+        // 좋아요 집계는 detail 테이블의 likeCount 칼럼이나
+        // 또는 로그 테이블을 직접 조회해도 되고, 둘 중 하나를 선택
+        return courseDetailRepository.findById(detailId)
+                .map(CourseDetail::getLikeCount)
+                .orElse(0);
+    }
 }
