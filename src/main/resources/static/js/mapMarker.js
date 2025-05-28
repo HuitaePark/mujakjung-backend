@@ -7,6 +7,8 @@ let lastRestaurantList = null;
 let lastAccommodationList = null;
 let modalDetailList = [];
 let modalCurrentIndex = 0;
+let currentDetail = null;
+let currentCourseId = null;
 const YOUR_KEY     = '44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1';
 const INITIAL_ZOOM = 6;
 const koreaBounds  = { latMin:33.0, latMax:38.5, lngMin:124.5, lngMax:131.5 };
@@ -122,7 +124,16 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                 // --- 2) 코스 리스트 렌더링 ---
                 const listContainer = document.getElementById('course-list');
                 listContainer.innerHTML = '';
-                data.list.forEach(item => {
+
+                // 🔥 디버깅: API 응답 데이터 확인
+                console.log('API 응답 data:', data);
+                console.log('data.list:', data.list);
+
+                data.list.forEach((item, index) => {
+                    // 🔥 디버깅: 각 아이템의 likeCount 확인
+                    console.log(`Item ${index}:`, item);
+                    console.log(`Item ${index} likeCount:`, item.likeCount);
+
                     const card = document.createElement('div');
                     card.className = 'card flex overflow-hidden';
                     card.innerHTML = `
@@ -146,8 +157,22 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                     // ✅ DOM 삽입 후에 버튼 찾아야 정확히 잡힘
                     const btn = card.querySelector('.view-detail-btn');
                     if (btn) {
-                        btn.addEventListener('click', () => {
-                            openModal(item);
+                        btn.addEventListener('mousedown', (e) => {
+                            // 🔥 수정: 원본 item을 그대로 전달하고, 디버깅 로그 추가
+                            e.stopPropagation();
+                            console.log('버튼 클릭 시 item:', item);
+                            console.log('모달에 전달할 likeCount:', item.likeCount);
+
+                            // likeCount가 undefined이거나 null인 경우에만 0으로 설정
+                            const itemToPass = {
+                                ...item,
+                                likeCount: item.likeCount !== undefined && item.likeCount !== null ? item.likeCount : 0
+                            };
+
+                            console.log('최종 전달 데이터:', itemToPass);
+                            setTimeout(() => {                // ✔ 다음 이벤트 루프로 미룸
+                                openModal(itemToPass);
+                                }, 0);
                         });
                     } else {
                         console.warn('버튼 못 찾음 😥', card.innerHTML);
@@ -184,42 +209,37 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
 
 
 });
+
 function openModalList(detailList) {
-    if (!detailList || detailList.length === 0) return;
+    if (!detailList || !detailList.length) return;
 
-    modalDetailList = detailList;
+    modalDetailList  = detailList;
     modalCurrentIndex = 0;
-    renderModal(modalDetailList[modalCurrentIndex]);
-    document.getElementById('detail-modal').style.display = 'flex';
 
-    // ✅ Tailwind로 버튼 보이기
+    // ① 첫 항목을 openModal 로 띄워서 like 로직 재사용
+    openModal(detailList[0]);
+
+    // ② 페이지 네비게이션 버튼만 따로 보여주기
     document.getElementById('modal-prev-btn').classList.remove('hidden');
     document.getElementById('modal-next-btn').classList.remove('hidden');
     document.getElementById('modal-page').classList.remove('hidden');
-
     updateModalPageText();
 }
-function openModal(detail) {
-    document.getElementById('modal-img').src = detail.imgPath;
-    document.getElementById('modal-title').textContent = detail.name;
-    document.getElementById('modal-like').textContent = detail.like || 0;
-    document.getElementById('modal-desc').textContent = detail.description;
-    document.getElementById('detail-modal').style.display = 'flex';
 
-    // 🔒 Tailwind로 버튼 숨기기
-    document.getElementById('modal-prev-btn').classList.add('hidden');
-    document.getElementById('modal-next-btn').classList.add('hidden');
-    document.getElementById('modal-page').classList.add('hidden');
-}
 
 document.getElementById('close-modal').addEventListener('click', () => {
     document.getElementById('detail-modal').style.display = 'none';  // hide
 });
+
 function renderModal(detail) {
     document.getElementById('modal-img').src = detail.imgPath;
     document.getElementById('modal-title').textContent = detail.name;
-    document.getElementById('modal-like').textContent = detail.like || 0;
+    document.getElementById('modal-like').textContent = detail.likeCount || 0;
     document.getElementById('modal-desc').textContent = detail.description;
+     // ← 추가: 페이지 바뀔 때 like 버튼 상태도 맞춰주기
+    currentDetail   = detail;
+    currentCourseId = detail.id;
+    updateLikeButtonState();
 }
 
 function updateModalPageText() {
@@ -228,6 +248,7 @@ function updateModalPageText() {
     document.getElementById('modal-prev-btn').disabled = modalCurrentIndex === 0;
     document.getElementById('modal-next-btn').disabled = modalCurrentIndex === modalDetailList.length - 1;
 }
+
 document.getElementById('modal-prev-btn').addEventListener('click', () => {
     if (modalCurrentIndex > 0) {
         modalCurrentIndex--;

@@ -158,7 +158,9 @@
                     <div>
                         <h2 id="modal-title" class="text-2xl font-bold mb-2">제목</h2>
                         <div class="flex items-center gap-2 text-gray-600">
-                            <i class="fa-regular fa-thumbs-up"></i>
+                            <button id="like-btn" class="ml-2 text-gray-500 hover:text-blue-600">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                            </button>
                             <span id="modal-like">0</span>
                         </div>
                     </div>
@@ -262,6 +264,148 @@
         // 초기 상태 반영
         updateThemeOptions();
     });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentCourseId = null;
+        let currentDetail   = null;  // ★ 클릭 핸들러에서 참조할 원본 객체
+
+        // 모달 열 때마다 GET /like-status 로 상태 조회
+        window.openModal = async function(detail) {
+            resetLikeButton();
+            currentCourseId = detail.id;
+            currentDetail   = detail;
+
+            try {
+                const res = await fetch(`/course/${currentCourseId}/like-status`);
+                if (!res.ok) throw new Error(res.statusText);
+                const {liked,totalLikes} = await res.json();
+
+
+                // 🔸 detail(list)·currentDetail(모달) 모두 최신화
+                Object.assign(detail, {
+                    liked,
+                    likeCount: totalLikes
+                });
+                currentDetail = detail;
+            } catch (err) {
+                console.error('좋아요 상태 조회 실패:', err);
+                // 조회 실패해도 기존 detail 값 사용하되, 기본값 설정
+                currentDetail.liked = currentDetail.liked || false;
+                currentDetail.likeCount = currentDetail.likeCount || 0;
+            }
+
+            // 모달 UI 업데이트 (항상 currentDetail의 최신 값 사용)
+            document.getElementById('modal-img').src = detail.imgPath;
+            document.getElementById('modal-title').textContent = detail.name;
+            document.getElementById('modal-like').textContent = currentDetail.likeCount;
+            document.getElementById('modal-desc').textContent = detail.description;
+            document.getElementById('detail-modal').style.display = 'flex';
+            const likeBtn = document.getElementById('like-btn');
+            likeBtn.style.pointerEvents = 'none';        // 클릭 못 받게
+            // 120 ms 정도면 모바일에서도 충분히 안전
+            setTimeout(() => { likeBtn.style.pointerEvents = ''; }, 120);
+            // 좋아요 버튼 상태 반영
+            resetLikeButton();
+            updateLikeButtonState();
+
+            // 이전/다음 숨기기
+            document.getElementById('modal-prev-btn').classList.add('hidden');
+            document.getElementById('modal-next-btn').classList.add('hidden');
+            document.getElementById('modal-page').classList.add('hidden');
+        };
+
+        // 좋아요 버튼 상태 업데이트 함수 분리
+        function updateLikeButtonState() {
+            const likeBtn = document.getElementById('like-btn');
+            const icon = likeBtn.querySelector('i');
+
+            if (currentDetail.liked) {
+                likeBtn.disabled = true;
+                likeBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                likeBtn.classList.remove('hover:text-blue-600');
+                icon.classList.add('text-blue-600');
+                icon.classList.remove('text-gray-500', 'hover:text-blue-600');
+                icon.classList.add('text-blue-600');  // 눌렀을 때 파란색
+            } else {
+                likeBtn.disabled = false;
+                likeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                likeBtn.classList.add('hover:text-blue-600');
+                icon.classList.remove('text-blue-600');
+                icon.classList.remove('text-blue-600');
+                icon.classList.add('text-gray-500');  // 아직 안 눌렀을 때 회색
+            }
+        }
+
+        function resetLikeButton() {
+            const likeBtn = document.getElementById('like-btn');
+            likeBtn.disabled = false;
+            likeBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            likeBtn.querySelector('i').classList.remove('text-blue-600');
+        }
+
+        // 좋아요 토글(POST)은 한 번만 바인딩
+        const likeBtn = document.getElementById('like-btn');
+        likeBtn.addEventListener('click', async () => {
+             if (currentDetail.liked) {
+                   alert('이미 좋아요를 눌렀습니다.');
+                   return;
+             }
+
+            // 버튼 즉시 비활성화 (중복 클릭 방지)
+            likeBtn.disabled = true;
+            likeBtn.classList.add('opacity-50');
+
+            try {
+                const res = await fetch(`/course/${currentCourseId}/like`, { method: 'POST' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+
+                const { liked, totalLikes } = await res.json();
+
+                Object.assign(currentDetail, {
+                    liked: true,
+                    likeCount: totalLikes
+                });
+
+                // 2) 화면 UI 업데이트
+                document.getElementById('modal-like').textContent = totalLikes;
+                updateLikeButtonState();
+
+                console.log('좋아요 처리 완료:', { liked, totalLikes });
+
+            } catch (err) {
+                console.error('좋아요 에러:', err);
+                alert('좋아요 처리 중 문제가 발생했습니다.');
+
+                // 에러 발생 시 버튼 상태 복원
+                likeBtn.disabled = false;
+                likeBtn.classList.remove('opacity-50');
+            }
+        });
+
+        // 모달 닫기 이벤트
+        const closeModal = document.getElementById('close-modal');
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                document.getElementById('detail-modal').style.display = 'none';
+                currentCourseId = null;
+                currentDetail = null;
+            });
+        }
+
+        // 모달 배경 클릭으로 닫기
+        const detailModal = document.getElementById('detail-modal');
+        if (detailModal) {
+            detailModal.addEventListener('click', (e) => {
+                if (e.target === detailModal) {
+                    detailModal.style.display = 'none';
+                    currentCourseId = null;
+                    currentDetail = null;
+                }
+            });
+        }
+    });
+
 </script>
 <script src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>

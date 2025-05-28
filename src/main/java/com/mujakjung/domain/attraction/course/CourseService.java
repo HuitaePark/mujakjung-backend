@@ -11,6 +11,7 @@ import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 import com.mujakjung.global.enums.MBTI;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,19 +111,25 @@ public class CourseService {
     public boolean likeCourse(Long detailId,String ip){
         //이미 좋아요 눌렀는지 체크
         if(likeRepo.existsByCourseDetailIdAndIp(detailId,ip)){
-            return false;
+            return true;
         }
         // 로그 저장
         CourseDetailLike log = CourseDetailLike.builder()
                 .courseDetailId(detailId)
                 .ip(ip)
+                .likedAt(LocalDateTime.now())
                 .build();
         likeRepo.save(log);
 
         //좋아요 카운트
         courseDetailRepository.plusLikeCount(detailId);
-        return true;
+        return false;
     }
+
+    public boolean findLikeCourse(Long detailId,String ip){
+        return likeRepo.existsByCourseDetailIdAndIp(detailId, ip);
+    }
+
 
     public long getLikeCount(Long detailId){
         // 좋아요 집계는 detail 테이블의 likeCount 칼럼이나
@@ -131,4 +138,5 @@ public class CourseService {
                 .map(CourseDetail::getLikeCount)
                 .orElse(0);
     }
+
 }

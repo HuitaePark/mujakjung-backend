@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CourseMapper {
 
-    @Mapping(target = "like", constant = "0") // 또는 다른 기본값
+
     DetailCourseResponseDto courseDetailToDto(CourseDetail courseDetail);
     List<DetailCourseResponseDto> courseToDto(List<CourseDetail> courseDetail);
 }

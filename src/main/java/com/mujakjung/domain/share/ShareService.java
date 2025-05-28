@@ -9,8 +9,6 @@ import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
 import com.mujakjung.domain.attraction.restaurant.Restaurant;
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
-import com.mujakjung.domain.review.Review;
-import com.mujakjung.domain.review.ReviewRepository;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotAttractionDto;
 import com.mujakjung.domain.share.dto.HotCourseDto;
@@ -38,7 +36,6 @@ public class ShareService {
     private final ShareMapper shareMapper;
 
     private final Map<String, Function<Long, HotAttractionDto>> handlerMap = new HashMap<>();
-    private final ReviewRepository reviewRepository;
 
     @PostConstruct
     private void initFunctionMap() {

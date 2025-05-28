@@ -59,5 +59,14 @@ public class CourseController {
         CourseLikeDto dto = new CourseLikeDto(courseService.likeCourse(id,ip),courseService.getLikeCount(id));
         return ResponseEntity.ok(dto);
     }
+    @GetMapping("/{id}/like-status")
+    public ResponseEntity<?> getLikeStatus(
+            @PathVariable Long id,
+            HttpServletRequest request) {
+        String ip = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
+                .orElse(request.getRemoteAddr());
+        CourseLikeDto dto = new CourseLikeDto(courseService.findLikeCourse(id,ip),courseService.getLikeCount(id));
+        return ResponseEntity.ok(dto);
+    }
 
 }
