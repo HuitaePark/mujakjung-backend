@@ -79,6 +79,13 @@ const regionSelect = document.getElementById('region-select');
 const seasonSelect = document.getElementById('season-select');
 const mbtiSelect   = document.getElementById('mbti-select');
 
+showInitialGuide('course-list',
+    '아직 추천받은 여행 코스가 없어요.');
+showInitialGuide('restaurant-list',
+    '아직 추천받은 식당이 없어요.');
+showInitialGuide('accommodation-list',
+    '아직 추천받은 숙소가 없어요.');
+
 document.getElementById('recommend-btn').addEventListener('click', () => {
     // 0) 맵 즉시 리셋
     vmap.getView().setCenter(defaultCenter);
@@ -135,21 +142,32 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                     console.log(`Item ${index} likeCount:`, item.likeCount);
 
                     const card = document.createElement('div');
-                    card.className = 'card flex overflow-hidden';
+                    card.className = 'card flex overflow-hidden relative';   // relative → 아이콘 위치 잡기 용
                     card.innerHTML = `
-      <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
-      <div class="p-3 flex flex-col justify-between flex-1">
-        <div>
-          <h4 class="font-medium text-black">${item.name}</h4>
-          <a href="${item.websiteLink || '#'}" target="_blank" class="text-xs text-blue-500 mt-1 block">
-            웹사이트
-          </a>
-        </div>
-        <div class="text-right">
-          <button class="view-detail-btn">상세보기</button>
-        </div>
-      </div>
-    `;
+  <img src="${item.imgPath}" alt="${item.name}"
+       class="w-32 h-32 object-cover flex-shrink-0"/>
+  <div class="p-3 flex flex-col justify-between flex-1">
+    <div>
+      <h4 class="font-medium text-black">${item.name}</h4>
+      <a href="${item.websiteLink || '#'}" target="_blank"
+         class="text-xs text-blue-500 mt-1 block">웹사이트</a>
+    </div>
+    <div class="text-right space-x-2">
+      <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">
+        상세보기
+      </button>
+      <!-- ⬇️ 공유 버튼 -->
+      <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+        <i class="fa-solid fa-share-nodes"></i>
+      </button>
+    </div>
+  </div>
+`;
+                    const shareBtn = card.querySelector('.share-btn');
+                    shareBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();          // 카드 클릭 이벤트와 충돌 방지
+                        shareItem(item);              // ↓ 새 함수 호출
+                    });
 
                     // 🔑 appendChild 먼저! DOM에 넣고 나서 querySelector 해야 함
                     listContainer.appendChild(card);
@@ -264,3 +282,37 @@ document.getElementById('modal-next-btn').addEventListener('click', () => {
         updateModalPageText();
     }
 });
+function shareItem(item) {
+    // 절대 URL 만들어 주기
+    const imageUrl = /^https?:\/\//.test(item.imgPath)
+        ? item.imgPath
+        : window.location.origin + item.imgPath;
+
+    const linkUrl  = `${window.location.origin}/view/${item.dtoType || 'course'}/${item.id ?? ''}`;
+
+    Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+            title:       item.name,
+            description: item.address || item.description || '무작정 추천 여행지 정보를 확인해 보세요.',
+            imageUrl,
+            link: { mobileWebUrl: linkUrl, webUrl: linkUrl }
+        },
+        buttons: [{
+            title: '웹에서 보기',
+            link: { mobileWebUrl: linkUrl, webUrl: linkUrl }
+        }]
+    });
+}
+function showInitialGuide(targetId, message) {
+    const box = document.getElementById(targetId);
+    if (!box) return;
+
+    box.innerHTML = `
+    <div class="text-center text-sm text-gray-500 py-6">
+      ${message}<br>
+      <span class="font-medium text-blue-600">[ 랜덤 여행지 추천 ]</span> 버튼을 눌러<br>
+      여행 정보를 받아보세요!
+    </div>
+  `;
+}

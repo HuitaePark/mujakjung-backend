@@ -16,30 +16,58 @@
 // 2) 식당/숙소 리스트를 불러오는 함수
 function loadList(type) {
   let list;
-  if (type === 'restaurant')     list = lastRestaurantList;
+  if (type === 'restaurant')      list = lastRestaurantList;
   else if (type === 'accommodation') list = lastAccommodationList;
   else return;
 
-  if (!list) return;  // 아직 추천 버튼을 안 눌렀거나, 로드 실패 시
+  if (!list) return;   // 아직 추천을 안 받은 경우
 
   const listContainer = document.getElementById(`${type}-list`);
   listContainer.innerHTML = '';
+
   list.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'card flex overflow-hidden';
+    card.className = 'card flex overflow-hidden relative';
+
+    /* 절대경로 이미지 */
+    let imgSrc = item.imgPath || '/images/default.jpg';
+    if (!/^https?:\/\//.test(imgSrc)) {
+      imgSrc = window.location.origin + imgSrc;
+    }
+
+    /* 세부정보(식당·숙소) 버튼 → 웹사이트 없으면 네이버지도 */
+    const detailLink =
+        item.websiteLink ||
+        `https://map.naver.com/search/${encodeURIComponent(item.name)}`;
+
     card.innerHTML = `
-      <img src="${item.imgPath}" alt="${item.name}" class="w-24 h-auto object-cover"/>
-      <div class="p-3 flex-grow">
-        <h4 class="font-medium text-black">${item.name}</h4>
-        <p class="text-xs text-gray-500">${item.address}</p>
-        <a href="${item.websiteLink}" target="_blank" class="text-xs text-blue-500 mt-1 block">
-          웹사이트
-        </a>
-        <div class="text-right mt-2">
-          <button class="view-detail-btn">상세보기</button>
+      <img src="${imgSrc}" alt="${item.name}"
+           class="w-24 h-auto object-cover flex-shrink-0"/>
+      <div class="p-3 flex flex-col justify-between flex-1">
+        <div>
+          <h4 class="font-medium text-black">${item.name}</h4>
+          <p class="text-xs text-gray-500">${item.address}</p>
+          <a href="${detailLink}" target="_blank"
+             class="text-xs text-blue-500 mt-1 block">웹사이트</a>
+        </div>
+        <div class="text-right space-x-2 mt-2">
+
+          <!-- ✈️ 공유 버튼 -->
+          <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+            <i class="fa-solid fa-share-nodes"></i>
+          </button>
         </div>
       </div>
     `;
+
+    /* 공유 버튼 핸들러 */
+    card.querySelector('.share-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      shareItem({         // shareItem 재사용
+        ...item,
+        dtoType: type      // restaurant | accommodation
+      });
+    });
     listContainer.appendChild(card);
   });
 }
