@@ -1,5 +1,6 @@
 package com.mujakjung.global.config;
 
+import com.mujakjung.domain.share.dto.HotAttractionDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -27,6 +28,19 @@ public class RedisConfig {
         template.setDefaultSerializer(serializer);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(serializer);
+        return template;
+    }
+    @Bean
+    public RedisTemplate<String, HotAttractionDto> hotAttractionRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, HotAttractionDto> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        // DTO 타입 전용 Jackson serializer
+        Jackson2JsonRedisSerializer<HotAttractionDto> serializer =
+                new Jackson2JsonRedisSerializer<>(HotAttractionDto.class);
+        template.setValueSerializer(serializer);
+        template.setKeySerializer(new StringRedisSerializer());
+
         return template;
     }
 }

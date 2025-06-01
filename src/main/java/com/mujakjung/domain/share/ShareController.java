@@ -24,7 +24,7 @@ public class ShareController {
 
     private final ShareService shareService;
     private static final String[] ALLOWED_TYPES ={"COURSE","RESTAURANT","ACCOMMODATION"};
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String,HotAttractionDto> hotAttractionRedisTemplate;
 
     @PostMapping//공유 데이터 저장
     public ResponseEntity<?> saveShare(
@@ -35,20 +35,10 @@ public class ShareController {
         return ResponseEntity.status(HttpStatus.OK).body("공유데이터 저장 성공");
     }
     @GetMapping("/hot")
-    public ResponseEntity<?> getPopular(){
+    public ResponseEntity<List<HotAttractionDto>> getPopular() {
         List<HotAttractionDto> results = new ArrayList<>();
-        for(String type : ALLOWED_TYPES){
-            String key = "hot:"+type.toUpperCase();
-            HotAttractionDto cached = (HotAttractionDto) redisTemplate.opsForValue().get(key);
-
-            if(cached != null){
-                results.add(cached);
-            }else{
-                // TTL이 끝났거나 캐시에 없음 → 서비스 호출 후 캐싱
-                HotAttractionDto feched = shareService.findHotAttraction(type);
-                redisTemplate.opsForValue().set(key,feched, Duration.ofMinutes(10));
-                results.add(feched);
-            }
+        for (String type : ALLOWED_TYPES) {
+            results.add(shareService.findHotAttraction(type)); // 캐시 자동 적용
         }
         return ResponseEntity.ok(results);
     }

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,6 +49,7 @@ public class ShareService {
         Share share = findAttraction(dto);
         shareRepository.save(share);
     }
+    @Cacheable(cacheNames = "hot", key = "#type.toUpperCase()")
     public HotAttractionDto findHotAttraction(String type){
 
         //쉐어 테이블에서 원하는 타입을 카운트로 가장 많은 객체를 찾음
@@ -61,9 +64,6 @@ public class ShareService {
         return handler.apply(attractionId);
     }
 
-    public void updateAttractionData(String type){
-
-    }
 
 
 
@@ -72,7 +72,8 @@ public class ShareService {
         List<HotDetailCourseResponseDto> courseList = shareMapper.courseToDto(list);
         Course course = courseRepository.findById(attractionId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(), courseList);
+        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
+                course.getImgPath(), courseList);
     }
 
     private HotAccommodationDto findHotAccommodation(Long attractionId){
