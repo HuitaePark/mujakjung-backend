@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class ShareService {
         Share share = findAttraction(dto);
         shareRepository.save(share);
     }
+    @Cacheable(cacheNames = "hot", key = "#type.toUpperCase()")
     public HotAttractionDto findHotAttraction(String type){
 
         //쉐어 테이블에서 원하는 타입을 카운트로 가장 많은 객체를 찾음
@@ -62,9 +64,6 @@ public class ShareService {
         return handler.apply(attractionId);
     }
 
-    public void updateAttractionData(String type){
-
-    }
 
 
 

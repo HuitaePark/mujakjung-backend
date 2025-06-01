@@ -38,16 +38,7 @@ public class ShareController {
     public ResponseEntity<List<HotAttractionDto>> getPopular() {
         List<HotAttractionDto> results = new ArrayList<>();
         for (String type : ALLOWED_TYPES) {
-            String key = "hot:" + type;
-            HotAttractionDto cached = hotAttractionRedisTemplate.opsForValue().get(key);
-            if (cached != null) {
-                results.add(cached);
-            } else {
-                HotAttractionDto fetched = shareService.findHotAttraction(type);
-                hotAttractionRedisTemplate.opsForValue()
-                        .set(key, fetched, Duration.ofMinutes(10));
-                results.add(fetched);
-            }
+            results.add(shareService.findHotAttraction(type)); // 캐시 자동 적용
         }
         return ResponseEntity.ok(results);
     }
