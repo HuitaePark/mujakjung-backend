@@ -19,6 +19,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @DiscriminatorValue("ACCOMMODATION")
 public class Accommodation extends Attraction {
-    private String address;
     private String websiteLink;
 }

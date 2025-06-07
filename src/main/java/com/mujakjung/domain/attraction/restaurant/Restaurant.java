@@ -21,7 +21,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @DiscriminatorValue("RESTAURANT")
 public class Restaurant extends Attraction {
-    @Column(name = "address")
-    private String address;
     private String websiteLink;
 }
