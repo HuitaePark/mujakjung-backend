@@ -89,14 +89,22 @@ public class ShareService {
     private Share findAttraction(ShareDto dto){
 
         String type = dto.getType().toUpperCase();
+        //디테일 코스를 공유했으므로 역방향으로 탐색
+        if(type.equals("COURSE")){
+
+        }
 
         return switch (type) {
-            case "COURSE" ->
-                    Share.builder()
-                    .attractionType("COURSE")
-                    .attractionId(dto.getId())
-                    .attractionName(courseRepository.findNameById(dto.getId()))
-                    .build();
+            case "COURSE" -> {
+                CourseDetail detail = courseDetailRepository.findById(dto.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("없는 디테일 코스"));
+                Course course = detail.getCourse();
+                yield Share.builder()
+                        .attractionType("COURSE")
+                        .attractionId(dto.getId())
+                        .attractionName(course.getName())
+                        .build();
+            }
             case "ACCOMMODATION" -> Share.builder()
                     .attractionType("ACCOMMODATION")
                     .attractionId(dto.getId())
