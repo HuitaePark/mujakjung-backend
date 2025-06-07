@@ -88,7 +88,7 @@ public class ShareService {
 
     private Share findAttraction(ShareDto dto){
 
-        String type = dto.getType();
+        String type = dto.getType().toUpperCase();
 
         return switch (type) {
             case "COURSE" ->

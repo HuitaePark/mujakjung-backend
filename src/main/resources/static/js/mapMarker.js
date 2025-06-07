@@ -143,6 +143,7 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
 
                     const card = document.createElement('div');
                     card.className = 'card flex overflow-hidden relative';   // relative → 아이콘 위치 잡기 용
+                    card.setAttribute('data-id', item.id);
                     card.innerHTML = `
   <img src="${item.imgPath}" alt="${item.name}"
        class="w-32 h-32 object-cover flex-shrink-0"/>
@@ -290,6 +291,18 @@ function shareItem(item) {
 
     const linkUrl  = `${window.location.origin}/view/${item.dtoType || 'course'}/${item.id ?? ''}`;
 
+    // ✅ 1) 공유 저장 POST
+    fetch('/share', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `type=${item.dtoType || 'course'}&id=${item.id}`
+    }).then(res => res.text())
+        .then(console.log)
+        .catch(console.error);
+
+    // ✅ 2) 카카오톡 공유
     Kakao.Share.sendDefault({
         objectType: 'feed',
         content: {
@@ -304,6 +317,7 @@ function shareItem(item) {
         }]
     });
 }
+
 function showInitialGuide(targetId, message) {
     const box = document.getElementById(targetId);
     if (!box) return;

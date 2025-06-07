@@ -34,8 +34,33 @@ function getShareData() {
 }
 // 3) 버튼 클릭 시 동적 공유 생성
 document.getElementById('kakaotalk-sharing-btn').addEventListener('click', () => {
-   var data = getShareData();
-    
+  const data = getShareData();
+
+  // 1. 공유 저장 API 호출
+  const typeMap = {
+    'tab-course': 'course',
+    'tab-restaurant': 'restaurant',
+    'tab-accommodation': 'accommodation'
+  };
+  const activeTab = document.querySelector('.tab.active').id;
+  const type = typeMap[activeTab];
+
+  const card = document.querySelector(`#${activeTab} .card`);
+  const id = card ? card.dataset.id : null; // <div class="card" data-id="1234">로 돼 있어야 함
+
+  if (type && id) {
+    fetch('/share', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded' // form 전송
+      },
+      body: `type=${type}&id=${id}`
+    }).then(res => res.text())
+        .then(console.log)
+        .catch(console.error);
+  }
+
+  // 2. 카카오톡 공유 실행
   Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
@@ -58,4 +83,3 @@ document.getElementById('kakaotalk-sharing-btn').addEventListener('click', () =>
     ]
   });
 });
-
