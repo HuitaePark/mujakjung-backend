@@ -176,12 +176,9 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                     // ✅ DOM 삽입 후에 버튼 찾아야 정확히 잡힘
                     const btn = card.querySelector('.view-detail-btn');
                     if (btn) {
-                        btn.addEventListener('mousedown', (e) => {
+                        btn.addEventListener('click', (e) => {
                             // 🔥 수정: 원본 item을 그대로 전달하고, 디버깅 로그 추가
                             e.stopPropagation();
-                            console.log('버튼 클릭 시 item:', item);
-                            console.log('모달에 전달할 likeCount:', item.likeCount);
-
                             // likeCount가 undefined이거나 null인 경우에만 0으로 설정
                             const itemToPass = {
                                 ...item,
