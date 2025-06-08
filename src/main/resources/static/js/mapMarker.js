@@ -137,33 +137,33 @@ document.getElementById('recommend-btn').addEventListener('click', () => {
                 console.log('data.list:', data.list);
 
                 data.list.forEach((item, index) => {
-                    // 🔥 디버깅: 각 아이템의 likeCount 확인
-                    console.log(`Item ${index}:`, item);
-                    console.log(`Item ${index} likeCount:`, item.likeCount);
-
+                    // 링크를 보여줄 대상인지 미리 계산
+                    const showLink = ['restaurant', 'accommodation'].includes(item.dtoType);
+                    const linkHtml = showLink && item.websiteLink
+                        ? `<a href="${item.websiteLink}" target="_blank"
+            class="text-xs text-blue-500 mt-1 block">웹사이트</a>`
+                        : '';      // 코스(dtoType === 'course')면 빈 문자열
                     const card = document.createElement('div');
                     card.className = 'card flex overflow-hidden relative';   // relative → 아이콘 위치 잡기 용
                     card.setAttribute('data-id', item.id);
                     card.innerHTML = `
-  <img src="${item.imgPath}" alt="${item.name}"
-       class="w-32 h-32 object-cover flex-shrink-0"/>
-  <div class="p-3 flex flex-col justify-between flex-1">
-    <div>
-      <h4 class="font-medium text-black">${item.name}</h4>
-      <a href="${item.websiteLink || '#'}" target="_blank"
-         class="text-xs text-blue-500 mt-1 block">웹사이트</a>
+    <img src="${item.imgPath}" alt="${item.name}"
+         class="w-32 h-32 object-cover flex-shrink-0"/>
+    <div class="p-3 flex flex-col justify-between flex-1">
+      <div>
+        <h4 class="font-medium text-black">${item.name}</h4>
+        ${linkHtml}        <!-- ⬅︎ 조건부 링크 -->
+      </div>
+      <div class="text-right space-x-2">
+        <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">
+          상세보기
+        </button>
+        <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+          <i class="fa-solid fa-share-nodes"></i>
+        </button>
+      </div>
     </div>
-    <div class="text-right space-x-2">
-      <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">
-        상세보기
-      </button>
-      <!-- ⬇️ 공유 버튼 -->
-      <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
-        <i class="fa-solid fa-share-nodes"></i>
-      </button>
-    </div>
-  </div>
-`;
+  `;
                     const shareBtn = card.querySelector('.share-btn');
                     shareBtn.addEventListener('click', (e) => {
                         e.stopPropagation();          // 카드 클릭 이벤트와 충돌 방지
