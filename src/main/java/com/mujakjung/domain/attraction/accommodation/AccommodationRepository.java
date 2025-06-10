@@ -12,6 +12,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation,Lon
     @Query(value = "select a.name from Accommodation a where a.id = :id")
     String findNameById(@Param("id")Long id);
 
-    @Query("SELECT a FROM Accommodation a WHERE a.region = :region ORDER BY function('RAND')")
+    @Query("SELECT a FROM Accommodation a WHERE a.region LIKE CONCAT(:region, '%')")
     List<Accommodation> findRegionAccommodations(@Param("region") String region, Pageable pageable);
 }

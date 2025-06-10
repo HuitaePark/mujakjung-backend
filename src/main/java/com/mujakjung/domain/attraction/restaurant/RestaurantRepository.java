@@ -11,7 +11,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
     @Query(value = "select r.name from Restaurant r where r.id = :id")
     String findNameById(@Param("id")Long id);
 
-    @Query("SELECT r FROM Restaurant r WHERE r.region = :region ORDER BY function('RAND')")
+    @Query("SELECT r FROM Restaurant r WHERE r.region LIKE CONCAT(:region, '%')")
     List<Restaurant> findRegionRestaurants(@Param("region") String region, Pageable pageable);
 
 }

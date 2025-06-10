@@ -20,13 +20,18 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2e571aff5d4d7d129d6b79700f15b495&libraries=services&autoload=false"></script>
+
+    <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+
+    <script
+            src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"
+            integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6"
+            crossorigin="anonymous"
+    ></script>
 </head>
 <body>
-<script
-        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js"
-        integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6"
-        crossorigin="anonymous"
-></script>
+
 <header class="page-header">
     무작정 랜덤여행하기!
     <span id="info-btn" class="float-right text-sm font-normal py-1 px-2 bg-white text-black rounded cursor-pointer">설명보기</span>
@@ -196,11 +201,10 @@
 
     <!-- hot section -->
 
-    <div class="w-full mx-auto px-4 py-6">
-        <h3 class="text-lg font-bold text-black mb-4">최근 많이 공유된 핫스팟!🔥🔥</h3>
-        <div id="Hotcontent-course" class="my-3"></div>
-        <div id="Hotcontent-restaurant" class="my-3"></div>
-        <div id="Hotcontent-accommodation" class="my-3"></div>
+    <div class="w-full mx-auto px-4 py-6"> <h3 class="text-lg font-bold text-black mb-4">최근 많이 공유된 핫스팟!🔥🔥</h3>
+        <div id="Hotcontent-course" class="my-3 flex flex-wrap justify-center"></div>
+        <div id="Hotcontent-restaurant" class="my-3 flex flex-wrap justify-center"></div>
+        <div id="Hotcontent-accommodation" class="my-3 flex flex-wrap justify-center"></div>
     </div>
     <!-- 설명 모달 -->
     <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -237,6 +241,12 @@
     본 사이트는 한국관광공사 Tour API를 활용하여 만들었습니다.<br>
     ©2025 Mujakjung. All rights reserved.
 </footer>
+<script th:src="@{/js/mapMarker.js}" defer></script>
+<script defer th:src="@{/js/description.js}"></script>
+<script th:src="@{/js/kakaoShare.js}" defer></script>
+<script th:src="@{/js/hotSection.js}" defer></script>
+<script th:src="@{/js/resultTap.js}" defer></script>
+<script defer th:src="@{/js/modalAndShare.js}"></script>
 <script defer>
     document.addEventListener('DOMContentLoaded', () => {
         const themeSelect   = document.getElementById('theme-select');
@@ -407,13 +417,5 @@
     });
 
 </script>
-<script src="http://map.vworld.kr/js/vworldMapInit.js.do?version=2.0&apiKey=44ADFAEA-B1BF-3BC2-8036-0F5B19914FF1"></script>
-<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-<script defer th:src="@{/js/description.js}"></script>
-<script defer th:src="@{/js/mapMarker.js}"></script>
-<script th:src="@{/js/kakaoShare.js}" defer></script>
-<script th:src="@{/js/hotSection.js}" defer></script>
-<script th:src="@{/js/resultTap.js}"></script>
-
 </body>
 </html>

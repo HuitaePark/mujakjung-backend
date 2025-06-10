@@ -21,8 +21,13 @@ public class RestaurantService {
         Region입력을 받아서 레스토랑을 조회하는 메서드
      */
     public List<RestaurantApiResponse> findRegionRestaurants(String area) {
+        String[] strArr = area.split(" ");
+        String regionName   = strArr[0];
+        String districtName = strArr[1];
+        String st = regionName+" "+districtName;
+
         Pageable pageable = PageRequest.of(0, 3);
-        List<Restaurant> restaurant = restaurantRepository.findRegionRestaurants(area,pageable);
+        List<Restaurant> restaurant = restaurantRepository.findRegionRestaurants(st,pageable);
 
         return restaurantMapper.entityToDto(restaurant);
     }
