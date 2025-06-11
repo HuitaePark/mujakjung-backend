@@ -100,8 +100,7 @@ public class CourseService {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-
-        return new CourseApiResponse(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
+        return new CourseApiResponse(course.getName(),course.getId(), course.getRegion(), course.getLatitude(), course.getLongitude(),
                 course.getImgPath(), list, list.size());
     }
     /*

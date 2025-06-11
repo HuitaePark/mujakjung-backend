@@ -11,9 +11,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query(value = "select c.name from Course c where c.id = :id")
-    String findNameById(@Param("id")Long id);
-
     // 아무 코스나 랜덤으로 선택하는 메서드
     @Query(value = "SELECT a.id FROM Attraction a WHERE a.type = 'COURSE' ORDER BY RAND() LIMIT 1", nativeQuery = true)
     Long findRandomCourseId();

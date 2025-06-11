@@ -23,11 +23,9 @@ public class RestaurantService {
     public List<RestaurantApiResponse> findRegionRestaurants(String area) {
         String[] strArr = area.split(" ");
         String regionName   = strArr[0];
-        String districtName = strArr[1];
-        String st = regionName+" "+districtName;
 
         Pageable pageable = PageRequest.of(0, 3);
-        List<Restaurant> restaurant = restaurantRepository.findRegionRestaurants(st,pageable);
+        List<Restaurant> restaurant = restaurantRepository.findRegionRestaurants(regionName,pageable);
 
         return restaurantMapper.entityToDto(restaurant);
     }

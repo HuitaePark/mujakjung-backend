@@ -164,42 +164,57 @@
 
     // 카드 렌더링 분리
     function renderCourseCards(data) {
-        window.lastRegion = data.region; // window 객체에 저장
+        window.lastRegion = data.region;
         document.getElementById('result-section').style.display = 'block';
         const themeLabel = themeSelect.options[themeSelect.selectedIndex].text;
-        document.getElementById('result-text').innerHTML =
-            `${themeLabel} 추천받은 결과는 <br><span class="text-blue-700">${data.region}</span>입니다.`;
         document.getElementById('result-course').textContent = data.courseName;
-
+        const parentCourseId = data.id;
         const list = document.getElementById('course-list');
-        list.innerHTML = ''; // 기존 내용 초기화
+        list.innerHTML = '';
+
         data.list.forEach(item => {
             const showLink = ['restaurant','accommodation'].includes(item.dtoType);
             const linkHtml = showLink && item.websiteLink
                 ? `<a href="${item.websiteLink}" target="_blank" class="text-xs text-blue-500 mt-1 block">웹사이트</a>`
                 : '';
+
             const card = document.createElement('div');
             card.className = 'card flex overflow-hidden relative';
+
+            // ✅ ID 유효성 검사 및 기본값 설정
+            const itemId = item.id ?? item.contentId ?? item.attractionId;
+            const itemType = item.dtoType || item.type || 'course';
+
+            // dataset에 안전하게 설정
+            if (itemId != null) {card.dataset.id = String(itemId);}
+
+            card.dataset.type = String(itemType);
+
+
             card.innerHTML = `
-        <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
-        <div class="p-3 flex flex-col justify-between flex-1">
-          <div>
-            <h4 class="font-medium text-black">${item.name}</h4>
-            ${linkHtml}
-          </div>
-          <div class="text-right space-x-2">
-            <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">상세보기</button>
-            <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
-              <i class="fa-solid fa-share-nodes"></i>
-            </button>
-          </div>
-        </div>`;
+            <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
+            <div class="p-3 flex flex-col justify-between flex-1">
+                <div>
+                    <h4 class="font-medium text-black">${item.name}</h4>
+                    ${linkHtml}
+                </div>
+                <div class="text-right space-x-2">
+                    <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">상세보기</button>
+                    <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+                </div>
+            </div>`;
+
             list.appendChild(card);
 
+            // 공유 버튼 이벤트
             card.querySelector('.share-btn').addEventListener('click', e => {
                 e.stopPropagation();
-                shareItem(item);
+                shareItem(card);
             });
+
+            // 상세보기 버튼 이벤트
             card.querySelector('.view-detail-btn').addEventListener('click', e => {
                 e.stopPropagation();
                 openModal({ ...item, likeCount: item.likeCount ?? 0 });
