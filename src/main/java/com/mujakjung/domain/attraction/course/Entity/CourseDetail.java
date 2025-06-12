@@ -1,6 +1,7 @@
 package com.mujakjung.domain.attraction.course.Entity;
 
 
+import com.mujakjung.domain.member.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,5 +35,6 @@ public class CourseDetail {
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩으로 성능 최적화
     @JoinColumn(name = "course_id")
     private Course course;
+
 
 }

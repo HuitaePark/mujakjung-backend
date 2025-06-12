@@ -23,7 +23,6 @@ public class ShareController {
 
     private final ShareService shareService;
     private static final String[] ALLOWED_TYPES ={"COURSE","RESTAURANT","ACCOMMODATION"};
-    private final RedisTemplate<String,HotAttractionDto> hotAttractionRedisTemplate;
 
     @PostMapping//공유 데이터 저장
     public ResponseEntity<?> saveShare(

@@ -68,12 +68,23 @@ public class ShareService {
 
 
     private HotCourseDto findHotCourse(Long attractionId){
-        List<CourseDetail> list = courseDetailRepository.findByCourseId(attractionId);
-        List<HotDetailCourseResponseDto> courseList = shareMapper.courseToDto(list);
-        Course course = courseRepository.findById(attractionId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
-        return new HotCourseDto(course.getName(), course.getRegion(), course.getLatitude(), course.getLongitude(),
-                course.getImgPath(), courseList);
+        CourseDetail detail = courseDetailRepository
+                .findById(attractionId)
+                .orElseThrow(() -> new IllegalArgumentException("없는 코스입니다."));
+
+        Course course = detail.getCourse();      // 부모 코스
+
+
+
+
+        return HotCourseDto.builder()          // ← @Builder 를 쓰지 않는다면 new HotCourseDto( … )
+                .courseName(course.getName())  // 코스 이름
+                .detailName(detail.getName())  // 디테일 이름
+                .region(course.getRegion())    // 지역(코스 기준)
+                .likeCount(detail.getLikeCount())          // 총 좋아요 수
+                .imgPath(detail.getImgPath())  // 이미지
+                .description(detail.getDescription()) // 설명
+                .build();
     }
 
     private HotAccommodationDto findHotAccommodation(Long attractionId){
@@ -89,10 +100,7 @@ public class ShareService {
     private Share findAttraction(ShareDto dto){
 
         String type = dto.getType().toUpperCase();
-        //디테일 코스를 공유했으므로 역방향으로 탐색
-        if(type.equals("COURSE")){
 
-        }
 
         return switch (type) {
             case "COURSE" -> {

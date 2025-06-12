@@ -1,7 +1,6 @@
 package com.mujakjung.domain.attraction.course.Entity;
 
 import com.mujakjung.domain.member.Member;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,33 +8,33 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
-@Getter
 @Entity
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "non_member_detail_like",
-        uniqueConstraints = @UniqueConstraint(name = "ux_detail_ip",
-                columnNames = {"course_detail_id", "ip"}))
-public class CourseDetailLike {
+public class MemberDetailLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "course_detail_id", nullable = false)
     private Long courseDetailId;
+    private Long memberId;
 
-    @Column(nullable = false, length = 45)
-    private String ip;
+    @CreatedDate
+    private LocalDateTime liked_At;
 
-    @Column(name = "liked_at", nullable = false)
-    private LocalDateTime likedAt = LocalDateTime.now();
+    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩으로 성능 최적화
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+
 }
