@@ -181,32 +181,72 @@
             const card = document.createElement('div');
             card.className = 'card flex overflow-hidden relative';
 
-            // ✅ ID 유효성 검사 및 기본값 설정
             const itemId = item.id ?? item.contentId ?? item.attractionId;
             const itemType = item.dtoType || item.type || 'course';
 
-            // dataset에 안전하게 설정
-            if (itemId != null) {card.dataset.id = String(itemId);}
-
+            if (itemId != null) card.dataset.id = String(itemId);
             card.dataset.type = String(itemType);
 
-
             card.innerHTML = `
-            <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
-            <div class="p-3 flex flex-col justify-between flex-1">
-                <div>
-                    <h4 class="font-medium text-black">${item.name}</h4>
-                    ${linkHtml}
-                </div>
-                <div class="text-right space-x-2">
-                    <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">상세보기</button>
-                    <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </button>
-                </div>
-            </div>`;
+        <img src="${item.imgPath}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0"/>
+        <div class="p-3 flex flex-col justify-between flex-1">
+            <div>
+                <h4 class="font-medium text-black">${item.name}</h4>
+                ${linkHtml}
+            </div>
+            <div class="text-right space-x-2">
+                <button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">상세보기</button>
+                <button class="like-btn text-xs px-2 py-1 bg-red-200 rounded">
+                    <i class="fa-solid fa-heart"></i> <span class="like-count">${item.likeCount ?? 0}</span>
+                </button>
+                <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </button>
+            </div>
+        </div>`;
 
             list.appendChild(card);
+
+            // 좋아요 초기 상태 조회 후 스타일 반영
+            if (itemId != null && itemType === 'course') {
+                fetch(`/course/${itemId}/like-status`)
+                    .then(res => res.json())
+                    .then(status => {
+                        if (status.liked) {
+                            const likeBtn = card.querySelector('.like-btn');
+                            likeBtn.classList.remove('bg-red-200');
+                            likeBtn.classList.add('bg-red-500', 'text-white');
+                            likeBtn.disabled = true; // 이미 좋아요 눌렀으면 비활성화
+                        }
+                    })
+                    .catch(console.warn);
+            }
+
+            // 좋아요 클릭 이벤트
+            card.querySelector('.like-btn').addEventListener('click', async e => {
+                e.stopPropagation();
+                const btn = e.currentTarget;
+                const countSpan = btn.querySelector('.like-count');
+
+                if (btn.disabled) return;
+
+                try {
+                    const res = await fetch(`/course/${itemId}/like`, { method: 'POST' });
+                    if (!res.ok) throw new Error('좋아요 요청 실패');
+
+                    const result = await res.json(); // ★ 서버 응답 받아오기
+                    const totalLikes = result.totalLikes ?? parseInt(countSpan.textContent || '0', 10) + 1;
+
+                    // UI 업데이트
+                    btn.classList.remove('bg-red-200');
+                    btn.classList.add('bg-red-500', 'text-white');
+                    countSpan.textContent = totalLikes;
+                    btn.disabled = true;
+                } catch (err) {
+                    console.error(err);
+                    alert('좋아요 처리 중 오류가 발생했습니다.');
+                }
+            });
 
             // 공유 버튼 이벤트
             card.querySelector('.share-btn').addEventListener('click', e => {
