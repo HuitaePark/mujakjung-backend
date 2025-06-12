@@ -135,13 +135,10 @@
 
 
         <!-- Course List -->
-        <section class="p-4">
             <section id="content-course" class="p-4">
                 <div id="course-list" class="space-y-3">
-                    <!-- JS가 여기를 지우고 <div class="card">…를 동적으로 삽입합니다 -->
                 </div>
             </section>
-        </section>
         <!-- 식당 -->
         <section id="content-restaurant" class="p-4 hidden">
             <div id="restaurant-list" class="space-y-3"></div>
@@ -410,6 +407,17 @@
         }
     });
 
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.addEventListener('error', function (e) {
+            const target = e.target;
+            if (target.tagName === 'IMG' && !target.dataset.defaulted) {
+                target.src = '/images/default.png';
+                target.dataset.defaulted = 'true';
+            }
+        }, true);
+    });
 </script>
 </body>
 </html>

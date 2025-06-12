@@ -23,20 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         items.forEach(item => {
-            /* 1) 이미지 */
-            const rawImg = type === 'course'
-                ? item.list?.[0]?.imgPath // 코스일 경우 list의 첫 번째 항목 이미지 사용
-                : item.imgPath;
-            let imgSrc   = rawImg || '/images/default.jpg';
-            if (!/^https?:\/\//.test(imgSrc)) {
-                imgSrc = window.location.origin + imgSrc;
-            }
+            const imgSrc = (() => {
+                const rawImg = item.imgPath;
+                if (!rawImg) return '/images/default.jpg';
+                return /^https?:\/\//.test(rawImg) ? rawImg : window.location.origin + rawImg;
+            })();
 
-            /* 2) 텍스트 */
-            const title    = type === 'course' ? item.courseName : item.name;
-            const subtitle = type === 'course' ? item.region     : item.address;
+            const title = type === 'course' ? item.courseName : item.name;
+            const subtitle = type === 'course'
+                ? item.detailName || item.region
+                : (item.address || ''); // null 제거
 
-            /* 3) 링크 */
+
             const linkUrl = item.websiteLink
                 ? item.websiteLink
                 : `https://map.naver.com/search/${encodeURIComponent(title)}`;
@@ -44,40 +42,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `<a href="${linkUrl}" target="_blank" class="text-xs text-blue-500 mt-1 block">웹사이트</a>`
                 : '';
 
-            /* 4) 카드 마크업 (mapMarker.js와 거의 동일한 구조, 너비 제한 없음) */
             const card = document.createElement('div');
-            // 'w-full'은 유지하여 작은 화면에서 부모 너비를 채우도록 하고,
-            // 별도의 'max-w' 클래스는 제거합니다.
-            // 이렇게 하면 카드는 Flexbox의 동작에 따라 유동적으로 넓어집니다.
-            card.className = 'card flex overflow-hidden relative w-full'; // max-w-[400px] 제거
+            card.className = 'card flex overflow-hidden relative w-full';
             card.innerHTML = `
-        <img src="${imgSrc}" alt="${title}" class="w-32 h-32 object-cover flex-shrink-0"/>
-        <div class="p-3 flex flex-col justify-between flex-1"> <div>
-            <h4 class="font-medium text-black">${title}</h4>
-            ${subtitle ? `<p class="text-xs text-gray-500">${subtitle}</p>` : ''}
-            ${linkHtml}
-          </div>
-          <div class="text-right space-x-2 mt-2">
-            ${type === 'course'
+            <img src="${imgSrc}" alt="${title}" class="w-32 h-32 object-cover flex-shrink-0"/>
+            <div class="p-3 flex flex-col justify-between flex-1">
+              <div>
+                <h4 class="font-medium text-black">${title}</h4>
+                <p class="text-xs text-gray-500">${subtitle}</p>
+                ${linkHtml}
+              </div>
+              <div class="text-right space-x-2 mt-2">
+                ${type === 'course'
                 ? '<button class="view-detail-btn text-xs px-2 py-1 bg-gray-200 rounded">상세보기</button>'
                 : ''}
-            <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
-              <i class="fa-solid fa-share-nodes"></i>
-            </button>
-          </div>
-        </div>`;
+                <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
+                  <i class="fa-solid fa-share-nodes"></i>
+                </button>
+              </div>
+            </div>`;
 
             container.appendChild(card);
 
-            /* 상세보기(코스 전용) */
+            /* 상세보기 버튼 */
             if (type === 'course') {
                 const btn = card.querySelector('.view-detail-btn');
-                const detail = item.list?.[0];
-                if (btn && detail) {
-                    detail.likeCount = item.likeCount;
+                if (btn) {
                     btn.addEventListener('click', e => {
                         e.stopPropagation();
-                        window.openModal({ ...detail, likeCount: item.likeCount ?? 0 });
+                        window.openModal({
+                            name: item.courseName,
+                            detailName: item.detailName ?? '',
+                            description: item.description ?? '',
+                            imgPath: item.imgPath,
+                            likeCount: item.likeCount ?? 0,
+                            id: item.id ?? item.attractionId ?? null,
+                            dtoType: 'course'
+                        });
                     });
                 }
             }
@@ -85,9 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
             /* 공유 버튼 */
             card.querySelector('.share-btn').addEventListener('click', e => {
                 e.stopPropagation();
-                const shareTarget = type === 'course'
-                    ? { ...item.list?.[0], dtoType: type }
-                    : { ...item, dtoType: type };
+                const shareTarget = {
+                    ...item,
+                    name: item.courseName || item.name,
+                    dtoType: type
+                };
                 shareItem(shareTarget);
             });
         });
