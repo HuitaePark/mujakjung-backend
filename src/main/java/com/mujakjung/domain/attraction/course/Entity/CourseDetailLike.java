@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "non_member_detail_like",
+@Table(name = "non_member_like",
         uniqueConstraints = @UniqueConstraint(name = "ux_detail_ip",
                 columnNames = {"course_detail_id", "ip"}))
 public class CourseDetailLike {
