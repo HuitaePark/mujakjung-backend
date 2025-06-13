@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.BatchSize;
 @Builder
 @DiscriminatorValue("COURSE")
 @AllArgsConstructor
+@Table(name = "course")
 public class Course extends Attraction {
 
     // 세부 항목과의 관계 (지연 로딩 사용)
