@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @DiscriminatorColumn(name = "type")
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "attraction")
 public abstract class Attraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
