@@ -14,7 +14,7 @@ public interface CourseDetailRepository extends JpaRepository<CourseDetail,Long>
     List<CourseDetail> findByCourseId(Long courseId);
 
     @Modifying
-    @Query(value = "UPDATE Course_detail set likeCount = likeCount+1 where id = :id",nativeQuery = true)
+    @Query(value = "UPDATE course_detail set likeCount = likeCount+1 where id = :id",nativeQuery = true)
     void plusLikeCount(@Param("id")Long DetailCourseId);
 
     Optional<CourseDetail> findCourseDetailById(Long id);
