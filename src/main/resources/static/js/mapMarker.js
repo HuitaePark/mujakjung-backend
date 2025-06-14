@@ -73,7 +73,7 @@
     // 지도 초기화
     function initMap() {
         map = new kakao.maps.Map(document.getElementById('vmap'), {
-            center: new kakao.maps.LatLng(36.5, 127.5),
+            center: new kakao.maps.LatLng(35.7, 127.5),
             level: INITIAL_LEVEL
         });
         defaultCenter = map.getCenter();
@@ -105,8 +105,7 @@
             const { lat, lng } = getRandomLatLng();
             const target = new kakao.maps.LatLng(lat, lng);
 
-            map.panTo(target);
-            map.setLevel(3, { animate: true, anchor: target });
+
 
             placeMarker(lat, lng);
             fetchCourseAndRender(); // 코스 정보 가져오기 및 렌더링
