@@ -1,6 +1,7 @@
 package com.mujakjung.domain.share;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import org.springframework.data.annotation.CreatedDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "share")
+@EntityListeners(AuditingEntityListener.class)
 public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
