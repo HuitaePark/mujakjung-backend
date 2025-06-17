@@ -26,7 +26,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Getter
 @Builder
 @NoArgsConstructor
-@Table(name = "member")
+@Table(name = "member", catalog = "q")
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +36,8 @@ public class Member {
     private String password;
 
     private String name;
+
+    private String role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MemberDetailLike> likes = new ArrayList<>();
