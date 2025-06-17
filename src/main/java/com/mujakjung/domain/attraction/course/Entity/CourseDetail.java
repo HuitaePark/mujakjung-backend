@@ -37,4 +37,5 @@ public class CourseDetail {
     private Course course;
 
 
+
 }

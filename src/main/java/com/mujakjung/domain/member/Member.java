@@ -26,16 +26,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Getter
 @Builder
 @NoArgsConstructor
-@Table(name = "member", catalog = "q")
+@Table(name = "member")
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String memberId;
+    private String username;
     private String password;
-
-    private String name;
+    private String nickname;
 
     private String role;
 
@@ -44,10 +43,10 @@ public class Member {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime create_At;
+    private LocalDateTime created_at;
 
     @UpdateTimestamp
-    private LocalDateTime update_At;
+    private LocalDateTime updated_at;
 
     public void updateEncryptionPassword(PasswordEncoder encoder){
         this.password = encoder.encode(this.password);

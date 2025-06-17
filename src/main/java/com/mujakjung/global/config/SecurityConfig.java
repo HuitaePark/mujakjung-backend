@@ -20,7 +20,7 @@ public class SecurityConfig {
         //경로 인가 설정
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/signUp").permitAll()
+                        .requestMatchers("/member/**","/").permitAll()
                         .requestMatchers("/adminPage").hasRole("ADMIN")
                         .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                 );

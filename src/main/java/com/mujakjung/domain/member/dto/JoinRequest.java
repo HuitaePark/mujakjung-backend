@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class JoinRequest {
-    private String memberId;
+    private String username;
     private String password;
-    private String name;
+    private String nickname;
 }
