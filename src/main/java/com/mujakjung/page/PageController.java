@@ -16,4 +16,14 @@ public class PageController {
         return "mujakjung";
     }
 
+    @GetMapping("/join-success")
+    public String joinSuccess(){
+        return "login";
+    }
+
+    @GetMapping("/join-page")
+    public String joinProc(){
+        return "join";
+    }
+
 }
