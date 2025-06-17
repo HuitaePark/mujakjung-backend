@@ -3,6 +3,7 @@ package com.mujakjung.domain.member;
 
 import com.mujakjung.domain.member.dto.JoinRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
-
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     public void join(JoinRequest joinRequest) throws IllegalAccessException {
 
         if(memberRepository.existsByMemberId(joinRequest.getMemberId())){
@@ -18,7 +19,8 @@ public class MemberService {
         }
 
         Member member = memberMapper.requestToMember(joinRequest);
+        member.updateEncryptionPassword(bCryptPasswordEncoder);
         memberRepository.save(member);
     }
-    
+
 }

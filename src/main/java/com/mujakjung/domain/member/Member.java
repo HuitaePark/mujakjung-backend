@@ -1,8 +1,7 @@
 package com.mujakjung.domain.member;
 
-import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
+import com.mujakjung.domain.attraction.course.Entity.Course;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetailLike;
-import com.mujakjung.domain.attraction.course.Entity.MemberDetailLike;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @AllArgsConstructor
@@ -40,7 +40,7 @@ public class Member {
     private String role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MemberDetailLike> likes = new ArrayList<>();
+    private final List<CourseDetailLike> likes = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -48,5 +48,9 @@ public class Member {
 
     @UpdateTimestamp
     private LocalDateTime update_At;
+
+    public void updateEncryptionPassword(PasswordEncoder encoder){
+        this.password = encoder.encode(this.password);
+    }
 
 }
