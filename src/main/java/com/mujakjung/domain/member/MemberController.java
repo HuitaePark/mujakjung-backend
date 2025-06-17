@@ -1,6 +1,7 @@
 package com.mujakjung.domain.member;
 
 import com.mujakjung.domain.member.dto.JoinRequest;
+import com.mujakjung.domain.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,9 @@
-package com.mujakjung.domain.member;
+package com.mujakjung.domain.member.service;
 
 
+import com.mujakjung.domain.member.Member;
+import com.mujakjung.domain.member.MemberMapper;
+import com.mujakjung.domain.member.MemberRepository;
 import com.mujakjung.domain.member.dto.JoinRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +22,7 @@ public class MemberService {
         }
 
         Member member = memberMapper.requestToMember(joinRequest);
-        member.updateEncryptionPassword(bCryptPasswordEncoder);
+        member.encryptionPassword(bCryptPasswordEncoder);
         memberRepository.save(member);
     }
 

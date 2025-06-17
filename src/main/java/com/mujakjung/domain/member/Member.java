@@ -48,8 +48,7 @@ public class Member {
     @UpdateTimestamp
     private LocalDateTime updated_at;
 
-    public void updateEncryptionPassword(PasswordEncoder encoder){
-        this.password = encoder.encode(this.password);
+    public void encryptionPassword(PasswordEncoder encoder){
+        encoder.encode(this.password);
     }
-
 }
