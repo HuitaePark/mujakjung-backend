@@ -49,6 +49,6 @@ public class Member {
     private LocalDateTime updated_at;
 
     public void encryptionPassword(PasswordEncoder encoder){
-        encoder.encode(this.password);
+        this.password = encoder.encode(this.password);
     }
 }
