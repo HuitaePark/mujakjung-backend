@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +35,9 @@ public class SecurityConfig {
         //경로 인가 설정
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/**")
+                        ).permitAll()
                         .requestMatchers("/member/**","/","/login").permitAll()
                         .requestMatchers("/adminPage").hasRole("ADMIN")
                         .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
@@ -46,6 +50,23 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
 
         http.addFilterAt(jsonFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // ****** 로그아웃 설정 추가 시작 ******
+        http
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // 로그아웃을 처리할 URL (기본값: /logout)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            // 로그아웃 성공 시 처리할 로직
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("{\"message\": \"로그아웃 성공\"}");
+                        })
+                        .logoutSuccessUrl("/?logout") // 로그아웃 성공 시 리다이렉트할 URL (handler와 동시 사용 불가, handler 우선)
+                        .invalidateHttpSession(true) // 세션 무효화 (기본값: true)
+                        .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제 (필요에 따라 추가)
+                );
+
         return http.build();
     }
 
@@ -55,6 +76,7 @@ public class SecurityConfig {
         jsonFilter.setFilterProcessesUrl("/login");
         jsonFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setStatus(HttpServletResponse.SC_OK);
+            request.getSession(true);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("{\"message\": \"로그인 성공\"}");
