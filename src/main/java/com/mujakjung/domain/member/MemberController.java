@@ -22,5 +22,4 @@ public class MemberController {
         memberService.join(joinRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원정보 저장 성공");
     }
-
 }

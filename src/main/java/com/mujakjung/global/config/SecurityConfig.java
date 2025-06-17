@@ -64,7 +64,7 @@ public class SecurityConfig {
                         })
                         .logoutSuccessUrl("/?logout") // 로그아웃 성공 시 리다이렉트할 URL (handler와 동시 사용 불가, handler 우선)
                         .invalidateHttpSession(true) // 세션 무효화 (기본값: true)
-                        .deleteCookies("JSESSIONID") // JSESSIONID 쿠키 삭제 (필요에 따라 추가)
+                        .deleteCookies("SESSION")
                 );
 
         return http.build();
