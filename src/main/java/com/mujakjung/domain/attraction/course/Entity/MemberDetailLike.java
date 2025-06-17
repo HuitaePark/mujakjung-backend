@@ -21,7 +21,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "member_course_detail_like")
+@Table(name = "member_like")
 public class MemberDetailLike {
 
     @Id

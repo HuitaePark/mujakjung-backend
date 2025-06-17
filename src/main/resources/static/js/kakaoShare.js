@@ -2,7 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1) SDK 초기화
-  Kakao.init('2e571aff5d4d7d129d6b79700f15b495');
+  Kakao.init(kakaoAppKey);
   console.log('Kakao initialized:', Kakao.isInitialized());
 
   // 2) 탭별 첫 번째 카드 정보 읽어오는 헬퍼

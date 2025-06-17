@@ -20,8 +20,7 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=2e571aff5d4d7d129d6b79700f15b495&libraries=services&autoload=false"></script>
-
+    <script th:src="@{'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${appKey} + '&libraries=services&autoload=false'}"></script>
     <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
 
     <script
@@ -234,6 +233,10 @@
 </footer>
 <script th:src="@{/js/mapMarker.js}" defer></script>
 <script defer th:src="@{/js/description.js}"></script>
+<script th:inline="javascript">
+    const kakaoAppKey = /*[[${@environment.getProperty('kakao.map.Key')}]]*/ 'default-key';
+</script>
+
 <script th:src="@{/js/kakaoShare.js}" defer></script>
 <script th:src="@{/js/hotSection.js}" defer></script>
 <script th:src="@{/js/resultTap.js}" defer></script>
