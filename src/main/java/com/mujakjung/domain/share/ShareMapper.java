@@ -1,8 +1,8 @@
 package com.mujakjung.domain.share;
 
-import com.mujakjung.domain.attraction.accommodation.Accommodation;
+import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
-import com.mujakjung.domain.attraction.restaurant.Restaurant;
+import com.mujakjung.domain.attraction.restaurant.entity.Restaurant;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotDetailCourseResponseDto;
 import com.mujakjung.domain.share.dto.HotRestaurantDto;

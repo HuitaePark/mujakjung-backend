@@ -1,7 +1,6 @@
 package com.mujakjung.domain.attraction.accommodation;
 
-import com.mujakjung.domain.attraction.Attraction;
-import com.mujakjung.domain.attraction.restaurant.Restaurant;
+import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

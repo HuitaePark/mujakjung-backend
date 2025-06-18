@@ -1,29 +1,25 @@
 package com.mujakjung.domain.share;
 
-import com.mujakjung.domain.attraction.accommodation.Accommodation;
+import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
 import com.mujakjung.domain.attraction.accommodation.AccommodationRepository;
 import com.mujakjung.domain.attraction.course.Entity.Course;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
-import com.mujakjung.domain.attraction.restaurant.Restaurant;
+import com.mujakjung.domain.attraction.restaurant.entity.Restaurant;
 import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotAttractionDto;
 import com.mujakjung.domain.share.dto.HotCourseDto;
-import com.mujakjung.domain.share.dto.HotDetailCourseResponseDto;
 import com.mujakjung.domain.share.dto.HotRestaurantDto;
 import com.mujakjung.domain.share.dto.ShareDto;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service

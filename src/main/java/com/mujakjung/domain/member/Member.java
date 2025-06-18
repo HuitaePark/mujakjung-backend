@@ -1,7 +1,8 @@
 package com.mujakjung.domain.member;
 
-import com.mujakjung.domain.attraction.course.Entity.Course;
+import com.mujakjung.domain.attraction.accommodation.entity.AccommodationLike;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetailLike;
+import com.mujakjung.domain.attraction.restaurant.entity.RestaurantLike;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +13,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +40,13 @@ public class Member implements Serializable {
     private String role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private transient List<CourseDetailLike> likes;
+    private List<CourseDetailLike> courseDetailLikes;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RestaurantLike> restaurantLikes;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccommodationLike> accommodationLikes;
 
     @CreationTimestamp
     @Column(updatable = false)

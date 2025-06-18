@@ -1,5 +1,6 @@
 package com.mujakjung.domain.member.controller;
 
+import com.mujakjung.domain.member.dto.LikeAttractionDto;
 import com.mujakjung.domain.member.dto.MypageDto;
 import com.mujakjung.domain.member.dto.PasswordRequest;
 import com.mujakjung.domain.member.service.MyPageService;
@@ -29,6 +30,11 @@ public class MyPageController {
     public ResponseEntity<?> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestBody PasswordRequest passwordRequest) {
         myPageService.updatePassword(passwordRequest, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 성공");
+    }
+    @GetMapping("/like")
+    public ResponseEntity<?> getMyLike(@AuthenticationPrincipal UserDetails userDetails){
+       LikeAttractionDto likeAttractionDto = myPageService.getMyLike(userDetails.getUsername());
+
     }
 
 

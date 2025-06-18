@@ -1,12 +1,8 @@
-package com.mujakjung.domain.attraction.accommodation;
+package com.mujakjung.domain.attraction.accommodation.entity;
 
 import com.mujakjung.domain.attraction.Attraction;
-import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

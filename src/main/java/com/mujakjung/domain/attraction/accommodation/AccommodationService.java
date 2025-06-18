@@ -1,6 +1,7 @@
 package com.mujakjung.domain.attraction.accommodation;
 
 import com.mujakjung.domain.attraction.accommodation.dto.AccommodationApiResponse;
+import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;

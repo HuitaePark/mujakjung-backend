@@ -1,4 +1,4 @@
-package com.mujakjung.domain.attraction.restaurant;
+package com.mujakjung.domain.attraction.restaurant.entity;
 
 
 import com.mujakjung.domain.attraction.Attraction;

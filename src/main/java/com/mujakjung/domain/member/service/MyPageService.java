@@ -3,6 +3,7 @@ package com.mujakjung.domain.member.service;
 import com.mujakjung.domain.member.Member;
 import com.mujakjung.domain.member.MemberMapper;
 import com.mujakjung.domain.member.MemberRepository;
+import com.mujakjung.domain.member.dto.LikeAttractionDto;
 import com.mujakjung.domain.member.dto.MypageDto;
 import com.mujakjung.domain.member.dto.PasswordRequest;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,9 @@ public class MyPageService {
         else{
             throw new IllegalArgumentException("유저를 찾을수 없습니다.");
         }
+    }
+
+    public LikeAttractionDto getMyLike(String username) {
+
     }
 }
