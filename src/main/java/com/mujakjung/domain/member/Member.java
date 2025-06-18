@@ -52,4 +52,10 @@ public class Member implements Serializable {
     public void encryptionPassword(PasswordEncoder encoder){
         this.password = encoder.encode(this.password);
     }
+    public void updatePassword(String password,PasswordEncoder encoder){
+        this.password = encoder.encode(password);
+    }
+    public boolean checkPassword(String rawPassword, PasswordEncoder encoder) {
+        return encoder.matches(rawPassword, this.password);
+    }
 }

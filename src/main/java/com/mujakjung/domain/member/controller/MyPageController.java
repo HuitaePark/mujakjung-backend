@@ -4,6 +4,7 @@ import com.mujakjung.domain.member.dto.MypageDto;
 import com.mujakjung.domain.member.dto.PasswordRequest;
 import com.mujakjung.domain.member.service.MyPageService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,9 +26,12 @@ public class MyPageController {
            return ResponseEntity.ok(mypageDto);
     }
     @PatchMapping("/password")
-    public ResponseEntity<?> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestBody PasswordRequest passwordRequest){
-
+    public ResponseEntity<?> updateMyPassword(@AuthenticationPrincipal UserDetails userDetails, @RequestBody PasswordRequest passwordRequest) {
+        myPageService.updatePassword(passwordRequest, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 성공");
     }
+
+
 
 
 
