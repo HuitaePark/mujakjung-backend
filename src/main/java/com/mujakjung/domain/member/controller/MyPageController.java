@@ -31,15 +31,12 @@ public class MyPageController {
         myPageService.updatePassword(passwordRequest, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 성공");
     }
+    //좋아요 한 코스 숙소 식당 목록
     @GetMapping("/like")
     public ResponseEntity<?> getMyLike(@AuthenticationPrincipal UserDetails userDetails){
        LikeAttractionDto likeAttractionDto = myPageService.getMyLike(userDetails.getUsername());
-
+        return ResponseEntity.ok(likeAttractionDto);
     }
 
 
-
-
-
-    //좋아요 한 코스,숙소,식당 목록
 }

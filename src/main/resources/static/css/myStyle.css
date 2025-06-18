@@ -1,0 +1,190 @@
+/* src/main/resources/static/css/styles.css 파일 */
+
+/* 기존 내용 유지 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    background-color: #ffffff; /* 기존 메인 페이지와 동일한 흰색 배경 */
+    color: #333; /* 기본 텍스트 색상 */
+}
+
+/* 기존 스타일 유지 */
+.map-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+}
+
+.btn {
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #A2D2FC;
+    color: #1A1A1A; /* Tailwind config의 primary color, 글자색은 진한 회색 */
+}
+
+.btn-primary:hover {
+    background-color: #8BB9E0; /* primary-dark */
+    color: #1A1A1A; /* 호버 시에도 글자색 유지 */
+}
+
+/* btn-secondary는 기존에 없다면 추가 */
+.btn-secondary {
+    background-color: #F8F8F8;
+    color: #333;
+    border: 1px solid #E0E0E0;
+}
+
+.btn-secondary:hover {
+    background-color: #EBEBEB;
+}
+
+/* Tab 관련 스타일은 기존 것을 사용 */
+.tab-active {
+    position: relative;
+    color: #1A1A1A;
+    font-weight: 700;
+}
+
+.tab-active:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #1A1A1A;
+}
+
+.tab-container {
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    font-weight: 500;
+    cursor: pointer; /* 탭 클릭 가능하도록 커서 추가 */
+}
+
+.tab.active {
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+}
+
+
+/* 헤더 스타일 (기존 내용과 동일) */
+.page-header {
+    background-color: #A2D2FC;
+    color: white;
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 24px;
+    text-align: left; /* 마이페이지 헤더도 왼쪽 정렬 */
+}
+
+/* 푸터 스타일 (기존 내용과 동일) */
+.footer {
+    background-color: #A2D2FC;
+    color: white;
+    padding: 12px 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* 카카오톡 공유 버튼 스타일 (기존 내용과 동일) */
+.kakao-btn {
+    background-color: #FEE500;
+    color: #000000;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    margin-left: 30px;
+    margin-right: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    transition: background-color 0.2s ease; /* 호버 효과 추가 */
+}
+.kakao-btn:hover {
+    background-color: #fada00; /* 호버 시 약간 어두워짐 */
+}
+.kakao-btn img {
+    /* 이미 필요한 스타일이 있다면 그대로 유지 */
+    height: 1.25rem; /* 20px, Tailwind h-5와 비슷 */
+    width: auto;
+    margin-right: 0.5rem; /* 8px, 텍스트와 이미지 간격 */
+}
+
+/* 상세 보기 버튼 스타일 (기존 내용과 동일) */
+.view-detail-btn {
+    color: #666;
+    font-size: 12px;
+    text-align: right;
+    padding: 4px 8px;
+    background-color: transparent;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+    cursor: pointer;
+    border: none; /* 기본 버튼 스타일 제거 */
+    outline: none; /* 포커스 아웃라인 제거 */
+    transition: color 0.2s ease; /* 호버 효과 추가 */
+}
+.view-detail-btn:hover {
+    color: #000; /* 호버 시 글자색 진하게 */
+}
+
+
+/* 마이페이지 카드 리스트에 대한 추가 스타일 (필요시) */
+/* 좋아요한 코스 카드에 .card 클래스가 적용되므로, 특별한 추가 CSS는 필요 없을 수 있습니다.
+   하지만 마이페이지 카드들만의 특별한 여백이나 정렬이 필요하다면 추가할 수 있습니다. */
+#liked-courses-list {
+    /* grid-gap은 Tailwind의 gap-6으로 대체 */
+    /* max-width는 Tailwind의 max-w-4xl mx-auto로 대체 */
+    /* 예시: 카드간의 추가적인 수직 여백 */
+    /* row-gap: 1.5rem; */
+}
+
+/* 이미지 로드 실패 시 대체 이미지 (기존 내용과 동일) */
+img[src="/images/default.png"] {
+    object-fit: contain; /* 기본 이미지는 비율 유지하면서 컨테이너에 맞춤 */
+    background-color: #f0f0f0; /* 배경색으로 대비 효과 */
+}
+
+/* card-hot 관련 스타일 (메인 페이지의 핫스팟 섹션에 해당, 마이페이지에는 직접 사용되지 않음) */
+.card-hot {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-hot img {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* 16:9 비율 유지 */
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.card-hot .card-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

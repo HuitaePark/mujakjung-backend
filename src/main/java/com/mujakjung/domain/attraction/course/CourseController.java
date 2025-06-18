@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,19 +57,19 @@ public class CourseController {
     }
 
     @PostMapping("/{id}/like")
-    public ResponseEntity<CourseLikeDto> like(@PathVariable Long id,
-                                              HttpServletRequest request){
-        String ip = Optional.ofNullable(request.getHeader("X-Forwarded-For")).orElse(request.getRemoteAddr());
-        CourseLikeDto dto = new CourseLikeDto(courseService.likeCourse(id,ip),courseService.getLikeCount(id));
+    public ResponseEntity<CourseLikeDto> like(@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        long updatedLikeCount = courseService.likeCourse(id, username); // 업데이트된 좋아요 수 반환 받음
+        boolean likedStatus = courseService.findLikeCourse(id, username);
+        CourseLikeDto dto = new CourseLikeDto(likedStatus, updatedLikeCount);
         return ResponseEntity.ok(dto);
     }
     @GetMapping("/{id}/like-status")
     public ResponseEntity<?> getLikeStatus(
             @PathVariable Long id,
-            HttpServletRequest request) {
-        String ip = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
-                .orElse(request.getRemoteAddr());
-        CourseLikeDto dto = new CourseLikeDto(courseService.findLikeCourse(id,ip),courseService.getLikeCount(id));
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        CourseLikeDto dto = new CourseLikeDto(courseService.findLikeCourse(id,username),courseService.getLikeCount(id));
         return ResponseEntity.ok(dto);
     }
 

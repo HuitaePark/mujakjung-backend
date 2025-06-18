@@ -41,9 +41,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const card = document.createElement('div');
       card.className = 'card flex overflow-hidden relative'; // 기존 클래스 유지
+
+      const itemId = item.id ?? item.contentId ?? item.attractionId; // ID 가져오기
+      const itemType = type; // 'restaurant' 또는 'accommodation'
+
+      if (itemId != null) card.dataset.id = String(itemId);
+      card.dataset.type = String(itemType);
+
       card.innerHTML = `
         <img src="${imgSrc}" alt="${item.name}"
-             class="w-32 h-32 object-cover flex-shrink-0"/> <div class="p-3 flex flex-col justify-between flex-1">
+             class="w-32 h-32 object-cover flex-shrink-0" onerror="this.onerror=null;this.src='/images/default.png';"/>
+        <div class="p-3 flex flex-col justify-between flex-1">
           <div>
             <h4 class="font-medium text-black">${item.name}</h4>
             ${item.address ? `<p class="text-xs text-gray-500">${item.address}</p>` : ''}
@@ -51,12 +59,63 @@ document.addEventListener('DOMContentLoaded', () => {
                class="text-xs text-blue-500 mt-1 block">웹사이트</a>
           </div>
           <div class="text-right space-x-2 mt-2">
+            <button class="like-btn text-xs px-2 py-1 bg-red-200 rounded">
+              <i class="fa-solid fa-heart"></i> <span class="like-count">${item.likeCount ?? 0}</span>
+            </button>
             <button class="share-btn text-xs px-2 py-1 bg-yellow-400 rounded">
               <i class="fa-solid fa-share-nodes"></i>
             </button>
           </div>
         </div>`;
 
+      container.appendChild(card);
+
+      // 좋아요 초기 상태 조회 후 스타일 반영
+      if (itemId != null) {
+        fetch(`/${itemType}/${itemId}/like-status`) // 예: /restaurant/123/like-status
+            .then(res => res.json())
+            .then(status => {
+              if (status.liked) {
+                const likeBtn = card.querySelector('.like-btn');
+                likeBtn.classList.remove('bg-red-200');
+                likeBtn.classList.add('bg-red-500', 'text-white');
+                likeBtn.disabled = true; // 이미 좋아요 눌렀으면 비활성화
+              }
+            })
+            .catch(console.warn);
+      }
+
+      // 좋아요 클릭 이벤트
+      const likeBtn = card.querySelector('.like-btn');
+      likeBtn.addEventListener('click', async e => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        const countSpan = btn.querySelector('.like-count');
+
+        if (btn.disabled) return;
+
+        try {
+          const res = await fetch(`/${itemType}/${itemId}/like`, { method: 'POST' }); // 예: /restaurant/123/like
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`좋아요 요청 실패: ${errorText}`);
+          }
+
+          const result = await res.json();
+          const totalLikes = result.totalLikes ?? (parseInt(countSpan.textContent || '0', 10) + 1);
+
+          // UI 업데이트
+          btn.classList.remove('bg-red-200');
+          btn.classList.add('bg-red-500', 'text-white');
+          countSpan.textContent = totalLikes;
+          btn.disabled = true;
+        } catch (err) {
+          console.error(err);
+          alert('좋아요 처리 중 오류가 발생했습니다.');
+        }
+      });
+
+      // 공유 버튼 이벤트
       const shareBtn = card.querySelector('.share-btn');
       shareBtn.addEventListener('click', e => {
         e.stopPropagation();
@@ -64,10 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
           window.shareItem({ ...item, dtoType: type });
         } else {
           console.error("shareItem 함수를 찾을 수 없습니다.");
+          alert('공유 기능은 아직 개발 중입니다!'); // 사용자에게 알림
         }
       });
-
-      container.appendChild(card);
     });
   };
 
@@ -94,14 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // ★ 이 부분은 이제 mapMarker.js에서 데이터를 불러와 캐시하므로,
-    //    resultTap.js에서는 탭 클릭 시 중복 API 호출을 하지 않습니다.
-    //    만약 mapMarker.js에서 데이터를 불러오지 못했거나,
-    //    사용자가 새로고침 없이 탭만 클릭한 경우를 대비하여
-    //    이 로직을 유지할 수 있지만, 현재 의도상으로는 불필요합니다.
-    //    만약 '랜덤 여행지 추천' 버튼을 누르지 않고 바로 식당/숙소 탭을 클릭하는 경우를 처리하려면 필요.
-    //    현재 문제 상황에서는 '코스 조회 후 식당과 숙소 조회가 안 됨' 이므로
-    //    mapMarker.js에서 한번에 처리하는 것이 더 적절합니다.
 
     // 데이터를 찾을 수 없는 경우 (예: 페이지 로드 후 '랜덤 여행지 추천' 버튼 누르지 않은 경우)
     container.innerHTML = `<p class="text-center text-gray-500">데이터를 불러오는 중입니다. 잠시만 기다려주세요.</p>`;

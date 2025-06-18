@@ -105,11 +105,7 @@ public class SecurityConfig {
             // Spring Session Redis 사용시 세션이 자동으로 Redis에 저장됨
             request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-            System.out.println("로그인 성공! 현재 Security Context에 저장된 권한:");
-            authentication.getAuthorities().forEach(authority -> System.out.println("-> " + authority.getAuthority()));
 
-            // 세션 ID 확인 (Redis 키 형태)
-            System.out.println("세션 ID: " + request.getSession().getId());
 
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");

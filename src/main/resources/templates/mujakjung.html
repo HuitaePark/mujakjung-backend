@@ -34,6 +34,7 @@
 <header class="page-header">
     무작정 랜덤여행하기!
     <span id="info-btn" class="float-right text-sm font-normal py-1 px-2 bg-white text-black rounded cursor-pointer">설명보기</span>
+    <a href="/myPage" class="float-right text-sm font-normal py-1 px-2 mr-2 bg-white text-black rounded cursor-pointer">마이페이지</a>
 </header>
 
 <main class="pb-8">
@@ -236,7 +237,7 @@
 <script th:inline="javascript">
     const kakaoAppKey = /*[[${@environment.getProperty('kakao.map.Key')}]]*/ 'default-key';
 </script>
-
+<script th:src="@{/js/checkSession.js}" defer></script>
 <script th:src="@{/js/kakaoShare.js}" defer></script>
 <script th:src="@{/js/hotSection.js}" defer></script>
 <script th:src="@{/js/resultTap.js}" defer></script>

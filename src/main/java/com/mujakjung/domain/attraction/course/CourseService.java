@@ -8,7 +8,9 @@ import com.mujakjung.domain.attraction.course.dto.DetailCourseResponseDto;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailLikeRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
+import com.mujakjung.domain.member.MemberRepository;
 import com.mujakjung.global.enums.MBTI;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ public class CourseService {
     private final CourseDetailRepository courseDetailRepository;
     private final CourseMapper courseMapper;
     private final CourseDetailLikeRepository likeRepo;
+    private final MemberRepository memberRepository;
+    private final EntityManager em;
     /*
         랜덤 코스 조회 카테고리 메서드
     */
@@ -103,30 +107,39 @@ public class CourseService {
         return new CourseApiResponse(course.getName(),course.getId(), course.getRegion(), course.getLatitude(), course.getLongitude(),
                 course.getImgPath(), list, list.size());
     }
-    /*
-    좋아요 버튼 기능
-     */
+
     @Transactional
-    public boolean likeCourse(Long detailId,String ip){
-        //이미 좋아요 눌렀는지 체크
-        if(likeRepo.existsByCourseDetailIdAndIp(detailId,ip)){
-            return true;
+    public long likeCourse(Long detailId,String username){
+        Long memberId = memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("찾을수 없는 유저입니다.")).getId();
+        if(likeRepo.existsByCourseDetailIdAndMember_Id(detailId,memberId)){
+            log.info("코스 디테일 ID {}에 대해 회원 {}이(가) 이미 좋아요를 눌렀습니다.", detailId, username);
+            return courseDetailRepository.findById(detailId)
+                    .map(CourseDetail::getLikeCount)
+                    .orElse(0);
         }
         // 로그 저장
-        CourseDetailLike log = CourseDetailLike.builder()
+        CourseDetailLike logg = CourseDetailLike.builder()
                 .courseDetailId(detailId)
-                .ip(ip)
+                .courseDetail(courseDetailRepository.findById(detailId).orElseThrow(()->new IllegalArgumentException("찾을수 없는 코스 입니다.")))
+                .member(memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("찾을수 없는 유저입니다.")))
                 .likedAt(LocalDateTime.now())
                 .build();
-        likeRepo.save(log);
+        likeRepo.save(logg);
 
         //좋아요 카운트
         courseDetailRepository.plusLikeCount(detailId);
-        return false;
+        log.info("코스 디테일 ID {}에 대해 회원 {}이(가) 좋아요를 눌렀습니다.", detailId, username);
+        em.flush();
+        em.clear();
+        return  courseDetailRepository.findById(detailId)
+                .map(CourseDetail::getLikeCount)
+                .orElse(0);
     }
 
-    public boolean findLikeCourse(Long detailId,String ip){
-        return likeRepo.existsByCourseDetailIdAndIp(detailId, ip);
+    public boolean findLikeCourse(Long detailId,String username){
+        Long memberId = memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("찾을수 없는 유저입니다.")).getId();
+
+        return likeRepo.existsByCourseDetailIdAndMember_Id(detailId, memberId);
     }
 
 

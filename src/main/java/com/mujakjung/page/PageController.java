@@ -16,12 +16,12 @@ public class PageController {
         return "mujakjung";
     }
     //회원가입 성공시 로그인페이지로 이동
-    @GetMapping("/join-success")
-    public String joinSuccess(){
+    @GetMapping("/login-page")
+    public String login(){
         return "login";
     }
     //회원가입 페이지
-    @GetMapping("/join-page")
+    @GetMapping("/join")
     public String joinProc(){
         return "join";
     }
@@ -30,5 +30,6 @@ public class PageController {
     public String myPage(){
         return "myPage";
     }
+
 
 }

@@ -3,6 +3,7 @@ package com.mujakjung.domain.attraction.course.Entity;
 import com.mujakjung.domain.member.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,8 +24,9 @@ import org.springframework.data.annotation.CreatedDate;
 @NoArgsConstructor
 @Builder
 @Table(name = "course_detail_like",
-        uniqueConstraints = @UniqueConstraint(name = "ux_detail_ip",
-                columnNames = {"course_detail_id", "ip"}))
+        // 기존의 ip 기반 유니크 제약조건을 member 기반으로 변경
+        uniqueConstraints = @UniqueConstraint(name = "ux_detail_member",
+                columnNames = {"course_detail_id", "member_id"}))
 public class CourseDetailLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,15 +35,17 @@ public class CourseDetailLike {
     @Column(name = "course_detail_id", nullable = false)
     private Long courseDetailId;
 
-
-    @Column(nullable = false, length = 45)
     private String ip;
 
     @CreatedDate
     @Column(name = "liked_at", nullable = false)
     private LocalDateTime likedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_detail_id", insertable = false, updatable = false)
+    private CourseDetail courseDetail;
 }

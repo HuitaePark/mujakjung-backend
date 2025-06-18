@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LikeAttractionDto {
-    private List<CourseDetail> courseDetailList;
-    private List<Restaurant> restaurantList;
-    private List<Accommodation> accommodationList;
+    private List<CourseDto> courses;
+    private List<RestaurantDto> restaurants;
+    private List<AccommodationDto> accommodations;
 }

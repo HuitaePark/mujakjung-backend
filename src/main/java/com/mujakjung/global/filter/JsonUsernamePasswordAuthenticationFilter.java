@@ -41,7 +41,6 @@ public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
             }
 
             String body = sb.toString();
-            System.out.println("로그인 요청 바디: " + body);
 
             LoginRequest loginRequest = mapper.readValue(body, LoginRequest.class);
 

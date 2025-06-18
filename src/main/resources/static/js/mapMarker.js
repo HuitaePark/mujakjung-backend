@@ -18,7 +18,6 @@
     // 전역 변수
     let map, marker = null, defaultCenter, defaultLevel;
     let koreaPolygon;  // optional: GeoJSON으로 내부 검사용
-    // let lastRegion, lastRestaurantList, lastAccommodationList; // 이 전역 변수들은 window 객체로 관리되므로 중복 선언 제거
 
     // DOM 캐시
     const themeSelect  = document.getElementById('theme-select');
@@ -105,8 +104,6 @@
             const { lat, lng } = getRandomLatLng();
             const target = new kakao.maps.LatLng(lat, lng);
 
-
-
             placeMarker(lat, lng);
             fetchCourseAndRender(); // 코스 정보 가져오기 및 렌더링
         }, BLINK_DURATION);
@@ -138,10 +135,10 @@
             if (!accommodationRes.ok) throw new Error(accommodationRes.statusText);
 
             const restaurantData    = await restaurantRes.json();
-            const accommodationData = await accommodationRes.json();
-
             window.lastRestaurantList    = restaurantData.list;
+            const accommodationData = await accommodationRes.json();
             window.lastAccommodationList = accommodationData.list;
+
 
             // ★ 중요: 식당, 숙소 데이터를 가져온 후 바로 렌더링 함수 호출
             // resultTap.js의 renderList 함수를 호출
@@ -207,43 +204,84 @@
             list.appendChild(card);
 
             // 좋아요 초기 상태 조회 후 스타일 반영
+            // getLikeStatus 엔드포인트에서 { "liked": boolean, "totalLikes": long } 응답을 받음
             if (itemId != null && itemType === 'course') {
                 fetch(`/course/${itemId}/like-status`)
                     .then(res => res.json())
                     .then(status => {
-                        if (status.liked) {
-                            const likeBtn = card.querySelector('.like-btn');
+                        const likeBtn = card.querySelector('.like-btn');
+                        const countSpan = likeBtn.querySelector('.like-count');
+
+                        // --- 디버깅용 로그 ---
+                        console.log(`[초기 상태] Course ID: ${itemId}, API 응답 liked: ${status.liked}, totalLikes: ${status.totalLikes}`);
+                        console.log(`[초기 상태] 현재 span 내용: ${countSpan.textContent}`);
+
+                        countSpan.textContent = status.totalLikes; // 초기 좋아요 수도 정확히 반영
+
+                        // --- 디버깅용 로그 ---
+                        console.log(`[초기 상태] 업데이트 후 span 내용: ${countSpan.textContent}`);
+
+
+                        if (status.liked) { // 이미 좋아요가 눌러져 있다면
                             likeBtn.classList.remove('bg-red-200');
                             likeBtn.classList.add('bg-red-500', 'text-white');
                             likeBtn.disabled = true; // 이미 좋아요 눌렀으면 비활성화
+                            // --- 디버깅용 로그 ---
+                            console.log(`[초기 상태] 버튼 비활성화 및 색상 변경됨.`);
                         }
                     })
-                    .catch(console.warn);
+                    .catch(e => {
+                        console.warn(`[초기 상태] 좋아요 상태 조회 실패 (ID: ${itemId}):`, e);
+                    });
             }
 
             // 좋아요 클릭 이벤트
+            // /course/{itemId}/like 엔드포인트에서 { "liked": boolean, "totalLikes": long } 응답을 받음
+            // 여기서 liked: false는 새로 좋아요 눌림, liked: true는 이미 좋아요 눌림 (백엔드 로직 변경 반영)
             card.querySelector('.like-btn').addEventListener('click', async e => {
                 e.stopPropagation();
                 const btn = e.currentTarget;
                 const countSpan = btn.querySelector('.like-count');
 
-                if (btn.disabled) return;
+                // --- 디버깅용 로그 ---
+                console.log(`[클릭] Course ID: ${itemId} 좋아요 버튼 클릭됨.`);
+                console.log(`[클릭] 클릭 시 현재 span 내용: ${countSpan.textContent}`);
+
+                if (btn.disabled) {
+                    console.log(`[클릭] 버튼이 이미 비활성화되어 있습니다.`);
+                    return; // 이미 비활성화되어 있다면 (이미 좋아요 상태) 아무것도 안 함
+                }
 
                 try {
                     const res = await fetch(`/course/${itemId}/like`, { method: 'POST' });
-                    if (!res.ok) throw new Error('좋아요 요청 실패');
+                    if (!res.ok) {
+                        const errorText = await res.text(); // 에러 메시지 확인용
+                        throw new Error(`좋아요 요청 실패: ${res.status} - ${errorText}`);
+                    }
 
-                    const result = await res.json(); // ★ 서버 응답 받아오기
-                    const totalLikes = result.totalLikes ?? parseInt(countSpan.textContent || '0', 10) + 1;
+                    const result = await res.json(); // CourseLikeDto 응답: { "liked": boolean, "totalLikes": long }
 
-                    // UI 업데이트
+                    // --- 디버깅용 로그 ---
+                    console.log(`[클릭] API 응답 liked: ${result.liked}, totalLikes: ${result.totalLikes}`);
+
+                    // UI 업데이트: 서버에서 받은 최종 좋아요 수로 업데이트
+                    countSpan.textContent = result.totalLikes;
+
+                    // --- 디버깅용 로그 ---
+                    console.log(`[클릭] 업데이트 후 span 내용: ${countSpan.textContent}`);
+
+                    // 사용자의 요청: "한 번 좋아요를 누르면 다시 못 누르고 변한채 숫자 올라간채 고정됨"
+                    // 따라서 result.liked (이미 좋아요 여부)와 상관없이 버튼은 '좋아요 눌린' 상태로 고정하고 비활성화
                     btn.classList.remove('bg-red-200');
                     btn.classList.add('bg-red-500', 'text-white');
-                    countSpan.textContent = totalLikes;
-                    btn.disabled = true;
+                    btn.disabled = true; // 좋아요 처리 후 버튼을 비활성화
+
+                    // --- 디버깅용 로그 ---
+                    console.log(`[클릭] 버튼 비활성화 및 색상 변경됨.`);
+
                 } catch (err) {
                     console.error(err);
-                    alert('좋아요 처리 중 오류가 발생했습니다.');
+                    alert('좋아요 처리 중 오류가 발생했습니다: ' + err.message);
                 }
             });
 
