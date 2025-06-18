@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 public class MyPageService {
     private final MemberRepository memberRepository;
     private final MemberMapper mapper;
+
     public MypageDto getMyInfo(String username){
         Member member = memberRepository.findByUsername(username).orElseThrow(()-> new IllegalArgumentException("없는 유저 입니다."));
-        MypageDto mypageDto = mapper.entityToDto(member);
+        System.out.println(member);
+        return mapper.entityToDto(member);
     }
 }

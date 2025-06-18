@@ -1,5 +1,6 @@
 package com.mujakjung.domain.member;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,13 +9,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails , Serializable {
     private final Member member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(member::getRole);
+        List<GrantedAuthority> collection = new ArrayList<>();
+        collection.add(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + member.getRole()));
         return collection;
     }
 
