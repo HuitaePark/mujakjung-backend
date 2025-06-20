@@ -1,11 +1,11 @@
-package com.mujakjung.domain.attraction.course.dto;
+package com.mujakjung.domain.attraction.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CourseLikeDto {
+public class LikeDto {
     boolean liked;
     long totalLikes;
 }

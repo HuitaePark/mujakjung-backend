@@ -1,7 +1,7 @@
 package com.mujakjung.domain.share;
 
 import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
-import com.mujakjung.domain.attraction.accommodation.AccommodationRepository;
+import com.mujakjung.domain.attraction.accommodation.repository.AccommodationRepository;
 import com.mujakjung.domain.attraction.course.Entity.Course;
 import com.mujakjung.domain.attraction.course.Entity.CourseDetail;
 import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
