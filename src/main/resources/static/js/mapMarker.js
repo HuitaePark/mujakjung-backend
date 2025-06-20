@@ -69,17 +69,20 @@
         });
     }
 
+    // --- 수정된 부분 ---
     // 지도 초기화
     function initMap() {
         map = new kakao.maps.Map(document.getElementById('vmap'), {
             center: new kakao.maps.LatLng(35.7, 127.5),
-            level: INITIAL_LEVEL
+            level: INITIAL_LEVEL,
+            draggable: false // 지도 드래그 이동을 비활성화합니다.
         });
         defaultCenter = map.getCenter();
         defaultLevel  = map.getLevel();
 
         recommendBtn.addEventListener('click', onClickRecommend);
     }
+    // --- 수정 끝 ---
 
     // ‘랜덤 추첨’ 버튼 클릭 핸들러
     function onClickRecommend() {
