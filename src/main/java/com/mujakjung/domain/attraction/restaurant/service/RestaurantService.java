@@ -1,5 +1,7 @@
-package com.mujakjung.domain.attraction.restaurant;
+package com.mujakjung.domain.attraction.restaurant.service;
 
+import com.mujakjung.domain.attraction.restaurant.RestaurantMapper;
+import com.mujakjung.domain.attraction.restaurant.repository.RestaurantRepository;
 import com.mujakjung.domain.attraction.restaurant.dto.RestaurantApiResponse;
 import com.mujakjung.domain.attraction.restaurant.entity.Restaurant;
 import java.util.List;

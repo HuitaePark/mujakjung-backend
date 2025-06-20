@@ -8,7 +8,7 @@ import com.mujakjung.domain.attraction.course.repository.CourseDetailRepository;
 import com.mujakjung.domain.attraction.course.repository.CourseRepository;
 
 import com.mujakjung.domain.attraction.restaurant.entity.Restaurant;
-import com.mujakjung.domain.attraction.restaurant.RestaurantRepository;
+import com.mujakjung.domain.attraction.restaurant.repository.RestaurantRepository;
 import com.mujakjung.domain.share.dto.HotAccommodationDto;
 import com.mujakjung.domain.share.dto.HotAttractionDto;
 import com.mujakjung.domain.share.dto.HotCourseDto;

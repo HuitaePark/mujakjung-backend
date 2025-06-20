@@ -1,4 +1,4 @@
-package com.mujakjung.domain.attraction.restaurant;
+package com.mujakjung.domain.attraction.restaurant.repository;
 
 import com.mujakjung.domain.attraction.restaurant.entity.Restaurant;
 import java.util.List;
