@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class ShareController {
         shareService.saveAttraction(dto);
         return ResponseEntity.status(HttpStatus.OK).body("공유데이터 저장 성공");
     }
+
     @GetMapping("/hot")
     public ResponseEntity<List<HotAttractionDto>> getPopular() {
         List<HotAttractionDto> results = new ArrayList<>();

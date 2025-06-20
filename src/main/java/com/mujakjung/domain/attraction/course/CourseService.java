@@ -112,7 +112,6 @@ public class CourseService {
     public long likeCourse(Long detailId,String username){
         Long memberId = memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("찾을수 없는 유저입니다.")).getId();
         if(likeRepo.existsByCourseDetailIdAndMember_Id(detailId,memberId)){
-            log.info("코스 디테일 ID {}에 대해 회원 {}이(가) 이미 좋아요를 눌렀습니다.", detailId, username);
             return courseDetailRepository.findById(detailId)
                     .map(CourseDetail::getLikeCount)
                     .orElse(0);

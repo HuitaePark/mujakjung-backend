@@ -20,18 +20,7 @@ public class RedisConfig {
         template.setConnectionFactory(connectionFactory);
         return template;
     }
-//    @Bean
-//    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory){
-//
-//        RedisTemplate<String,Object> template = new RedisTemplate<>();
-//        template.setConnectionFactory(redisConnectionFactory);
-//
-//        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
-//        template.setDefaultSerializer(serializer);
-//        template.setKeySerializer(new StringRedisSerializer());
-//        template.setValueSerializer(serializer);
-//        return template;
-//    }
+
     @Bean
     public RedisTemplate<String, HotAttractionDto> hotAttractionRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, HotAttractionDto> template = new RedisTemplate<>();

@@ -235,49 +235,37 @@
                     });
             }
 
-            // 좋아요 클릭 이벤트
-            // /course/{itemId}/like 엔드포인트에서 { "liked": boolean, "totalLikes": long } 응답을 받음
-            // 여기서 liked: false는 새로 좋아요 눌림, liked: true는 이미 좋아요 눌림 (백엔드 로직 변경 반영)
             card.querySelector('.like-btn').addEventListener('click', async e => {
                 e.stopPropagation();
                 const btn = e.currentTarget;
                 const countSpan = btn.querySelector('.like-count');
 
-                // --- 디버깅용 로그 ---
-                console.log(`[클릭] Course ID: ${itemId} 좋아요 버튼 클릭됨.`);
-                console.log(`[클릭] 클릭 시 현재 span 내용: ${countSpan.textContent}`);
-
                 if (btn.disabled) {
                     console.log(`[클릭] 버튼이 이미 비활성화되어 있습니다.`);
-                    return; // 이미 비활성화되어 있다면 (이미 좋아요 상태) 아무것도 안 함
+                    return;
                 }
 
                 try {
+                    // 1. 로그인 여부 확인 (200 외에는 전부 로그인 필요로 간주)
+                    const sessionCheck = await fetch('/my');
+                    if (sessionCheck.status !== 200) {
+                        alert('좋아요를 누르려면 먼저 로그인해주세요.');
+                        return;
+                    }
+
+                    // 2. 좋아요 API 호출
                     const res = await fetch(`/course/${itemId}/like`, { method: 'POST' });
                     if (!res.ok) {
-                        const errorText = await res.text(); // 에러 메시지 확인용
+                        const errorText = await res.text();
                         throw new Error(`좋아요 요청 실패: ${res.status} - ${errorText}`);
                     }
 
-                    const result = await res.json(); // CourseLikeDto 응답: { "liked": boolean, "totalLikes": long }
-
-                    // --- 디버깅용 로그 ---
-                    console.log(`[클릭] API 응답 liked: ${result.liked}, totalLikes: ${result.totalLikes}`);
-
-                    // UI 업데이트: 서버에서 받은 최종 좋아요 수로 업데이트
+                    const result = await res.json();
                     countSpan.textContent = result.totalLikes;
 
-                    // --- 디버깅용 로그 ---
-                    console.log(`[클릭] 업데이트 후 span 내용: ${countSpan.textContent}`);
-
-                    // 사용자의 요청: "한 번 좋아요를 누르면 다시 못 누르고 변한채 숫자 올라간채 고정됨"
-                    // 따라서 result.liked (이미 좋아요 여부)와 상관없이 버튼은 '좋아요 눌린' 상태로 고정하고 비활성화
                     btn.classList.remove('bg-red-200');
                     btn.classList.add('bg-red-500', 'text-white');
-                    btn.disabled = true; // 좋아요 처리 후 버튼을 비활성화
-
-                    // --- 디버깅용 로그 ---
-                    console.log(`[클릭] 버튼 비활성화 및 색상 변경됨.`);
+                    btn.disabled = true;
 
                 } catch (err) {
                     console.error(err);
