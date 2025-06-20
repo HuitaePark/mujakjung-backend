@@ -6,6 +6,7 @@
     <title>마이페이지 - 내 좋아요</title>
     <link rel="stylesheet" th:href="@{/css/myStyles.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -18,120 +19,34 @@
             }
         }
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
     <style>
         /* 탭 버튼 스타일 */
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 1.5rem;
-            border-bottom: 2px solid #e5e7eb; /* gray-200 */
-        }
-        .tab {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            color: #6b7280; /* gray-500 */
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .tab.active {
-            color: #3b82f6; /* blue-500 */
-            border-bottom-color: #3b82f6; /* blue-500 */
-        }
-        .tab:hover {
-            color: #3b82f6; /* blue-500 */
-        }
+        .tab-container { display: flex; justify-content: center; margin-top: 1.5rem; border-bottom: 2px solid #e5e7eb; }
+        .tab { padding: 0.75rem 1.5rem; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 2px solid transparent; transition: all 0.3s ease; }
+        .tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        .tab:hover { color: #3b82f6; }
 
-        /* 모든 카드 공통 스타일 (가로 배치, 세로로 쌓임) */
-        .card {
-            border: 1px solid #e5e7eb; /* border-gray-200 */
-            border-radius: 0.5rem; /* rounded-lg */
-            background-color: #ffffff; /* bg-white */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm */
-            display: flex; /* 가로 배치 */
-            overflow: hidden;
-            position: relative;
-            height: auto; /* 내용에 따라 높이 조절 */
-            min-height: 128px; /* 이미지 높이에 맞춤 */
-        }
-        .card img {
-            width: 8rem; /* 32 * 4 = 128px (w-32) */
-            height: 8rem; /* 32 * 4 = 128px (h-32) */
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-        .card > div {
-            padding: 0.75rem; /* p-3 */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-grow: 1;
-        }
-        .card h4 {
-            font-weight: 500;
-            color: #000;
-            margin-bottom: 0.25rem;
-            line-clamp: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .card p { /* 주소 표시용 */
-            color: #6b7280;
-            font-size: 0.75rem;
-            margin-bottom: 0.5rem;
-            line-clamp: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .card .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            margin-top: auto;
-        }
+        /* 카드 공통 스타일 */
+        .card { border: 1px solid #e5e7eb; border-radius: 0.5rem; background-color: #ffffff; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); display: flex; overflow: hidden; position: relative; height: auto; min-height: 128px; }
+        .card img { width: 8rem; height: 8rem; object-fit: cover; flex-shrink: 0; }
+        .card > div { padding: 0.75rem; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
+        .card h4 { font-weight: 500; color: #000; margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card p { color: #6b7280; font-size: 0.75rem; margin-bottom: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card .action-buttons { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: auto; }
+        .card button, .card a { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; text-align: center; }
+        .view-detail-btn { background-color: #e5e7eb; color: #374151; border: none; }
+        .website-link-btn { background-color: #d1e7dd; color: #1a472a; }
 
-        /* 공통 버튼 스타일 */
-        .card button {
-            font-size: 0.75rem; /* text-xs */
-            padding: 0.25rem 0.5rem; /* px-2 py-1 */
-            border-radius: 0.25rem; /* rounded */
-            cursor: pointer;
-            white-space: nowrap; /* 버튼 내용 줄바꿈 방지 */
-        }
-        .view-detail-btn { /* 코스용 상세보기 */
-            background-color: #e5e7eb; /* gray-200 */
-            color: #374151; /* gray-700 */
-        }
-        .website-link-btn { /* 식당/숙소용 웹사이트 보기 버튼 */
-            background-color: #d1e7dd; /* Light green for external links */
-            color: #1a472a; /* Dark green for text */
-        }
-        .like-btn {
-            background-color: #fecaca; /* red-100 */
-            color: #ef4444; /* red-500 */
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-        .like-btn.liked {
-            background-color: #fca5a5; /* red-300 */
-            color: #991b1b; /* red-700 */
-        }
-        .share-btn {
-            background-color: #fef08a; /* yellow-300 */
-            color: #ca8a04; /* yellow-700 */
-        }
+        /* 페이징 컨트롤 스타일 */
+        .pagination-controls { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 1.5rem; }
+        .page-btn { padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; background-color: #fff; color: #374151; border-radius: 0.375rem; cursor: pointer; transition: background-color 0.2s; }
+        .page-btn:hover { background-color: #f3f4f6; }
+        .page-btn:disabled { background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+        .page-btn.active { background-color: #3b82f6; color: #fff; border-color: #3b82f6; }
+
         /* 기타 유틸리티 */
-        .line-clamp-1 {
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100">
@@ -154,25 +69,25 @@
         </div>
 
         <div id="content-course" class="p-4 pt-6">
-            <div id="liked-courses-list" class="space-y-3 max-w-4xl mx-auto">
-            </div>
-            <p id="no-liked-courses-course" class="text-center text-gray-500 mt-8 hidden">
+            <div id="liked-courses-list" class="space-y-3 max-w-4xl mx-auto"></div>
+            <div id="pagination-course" class="pagination-controls"></div>
+            <p id="no-liked-items-course" class="text-center text-gray-500 mt-8 hidden">
                 아직 좋아요한 여행 코스가 없습니다. 메인 페이지에서 멋진 여행지를 찾아보세요!
             </p>
         </div>
 
         <div id="content-restaurant" class="p-4 pt-6 hidden">
-            <div id="liked-restaurants-list" class="space-y-3 max-w-4xl mx-auto">
-            </div>
-            <p id="no-liked-courses-restaurant" class="text-center text-gray-500 mt-8 hidden">
+            <div id="liked-restaurants-list" class="space-y-3 max-w-4xl mx-auto"></div>
+            <div id="pagination-restaurant" class="pagination-controls"></div>
+            <p id="no-liked-items-restaurant" class="text-center text-gray-500 mt-8 hidden">
                 아직 좋아요한 식당이 없습니다.
             </p>
         </div>
 
         <div id="content-accommodation" class="p-4 pt-6 hidden">
-            <div id="liked-accommodations-list" class="space-y-3 max-w-4xl mx-auto">
-            </div>
-            <p id="no-liked-courses-accommodation" class="text-center text-gray-500 mt-8 hidden">
+            <div id="liked-accommodations-list" class="space-y-3 max-w-4xl mx-auto"></div>
+            <div id="pagination-accommodation" class="pagination-controls"></div>
+            <p id="no-liked-items-accommodation" class="text-center text-gray-500 mt-8 hidden">
                 아직 좋아요한 숙소가 없습니다.
             </p>
         </div>
@@ -203,6 +118,7 @@
         </div>
     </section>
 
+    <!-- 상세보기 모달 -->
     <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg p-6 w-full max-w-4xl relative">
             <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-black text-lg font-bold">닫기</button>
@@ -212,10 +128,10 @@
                     <div>
                         <h2 id="modal-title" class="text-2xl font-bold mb-2">제목</h2>
                         <div class="flex items-center gap-2 text-gray-600">
-                            <button id="modal-like-btn" class="flex items-center text-red-500 cursor-default">
+                            <div class="flex items-center text-red-500">
                                 <i class="fas fa-heart mr-1"></i>
                                 <span id="modal-like-count" class="font-medium">0</span>
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,327 +149,221 @@
 </footer>
 
 <script>
-    // --- 더미 데이터 선언 ---
-    const dummyLikedCourses = [
-        {
-            id: 1,
-            name: "서울의 밤, 한강 로맨스 코스",
-            imgPath: "https://rimage.gnst.jp/livejapan.com/public/article/detail/a/10/a1000007/img/ko/a1000007_main.jpg?20200827110940",
-            likeCount: 120,
-            description: "낭만적인 한강 야경을 따라 걷는 코스입니다. 여의도 공원에서 시작하여 세빛섬까지 이어지는 아름다운 야경을 감상하세요.",
-            websiteLink: "https://map.naver.com/search/서울 한강 야경 코스", // 이 링크는 코스 카드에서 사용되지 않음
-            liked: false // 초기 좋아요 상태
-        },
-        {
-            id: 2,
-            name: "제주도 동부 해안 드라이브",
-            imgPath: "https://a.travel-assets.com/findyours-php/viewfinder/images/res70/476000/476140-jeju-island.jpg",
-            likeCount: 95,
-            description: "성산일출봉, 섭지코지를 지나 세화 해변까지 이어지는 제주도 동부 해안 드라이브 코스입니다. 시원한 바닷바람을 맞으며 절경을 즐겨보세요.",
-            websiteLink: "https://map.naver.com/search/제주도 동부 해안 코스",
-            liked: true // 초기 좋아요 상태 (테스트용으로 하나 true)
-        },
-        {
-            id: 3,
-            name: "경주 역사 문화 탐방",
-            imgPath: "https://mblogthumb-phinf.pstatic.net/MjAyMzA1MDlfMjU4/MDAxNjgzNTkyOTY0NjE1.8F1m14dO3T8bLzQx0z-9yL-0r1d5f2Kz9fG7u8tNl5cg.Vvj4P1f11c_02R7d8qQ-p3o2-WqQy8eJ6K7M-j_yD7Ig.JPEG.gypsygarden/IMG_1027.JPG?type=w800",
-            likeCount: 78,
-            description: "불국사, 석굴암, 대릉원 등 신라 천년의 역사를 느낄 수 있는 경주 대표 코스입니다. 첨성대 앞에서 별을 보는 것도 잊지 마세요.",
-            websiteLink: "https://map.naver.com/search/경주 역사 문화 코스",
-            liked: false // 초기 좋아요 상태
-        }
-    ];
-
-    const dummyLikedRestaurants = [
-        {
-            id: 101,
-            name: "더 플레이스 강남점",
-            imgPath: "https://image.ytn.co.kr/general/jpg/2022/1004/202210041819385633_t.jpg",
-            address: "서울 강남구 강남대로 438",
-            websiteLink: "https://map.naver.com/search/더 플레이스 강남점",
-            description: "캐주얼한 이탈리안 요리를 즐길 수 있는 곳입니다.",
-            likeCount: 35,
-            liked: false
-        },
-        {
-            id: 102,
-            name: "제주 김만복 본점",
-            imgPath: "https://t1.daumcdn.net/cfile/tistory/2479533B584E858032",
-            address: "제주 제주시 오라로 41",
-            websiteLink: "https://map.naver.com/search/제주 김만복 본점",
-            description: "전복 김밥으로 유명한 제주도 맛집입니다.",
-            likeCount: 62,
-            liked: true // 테스트용으로 하나 true
-        },
-        {
-            id: 103,
-            name: "한옥마을 전주비빔밥",
-            imgPath: "https://media.vlpt.us/images/eungyeol/post/793ee76d-0985-4523-92f5-3004b08f42a5/%EC%A0%84%EC%A3%BC%EB%B9%84%EB%B9%85%EB%B0%A5.jpeg",
-            address: "전북 전주시 완산구 은행로 26",
-            websiteLink: "https://map.naver.com/search/한옥마을 전주비빔밥",
-            description: "전통 전주비빔밥을 맛볼 수 있는 한옥마을 맛집.",
-            likeCount: 48,
-            liked: false
-        }
-    ];
-
-    const dummyLikedAccommodations = [
-        {
-            id: 201,
-            name: "롯데호텔 서울",
-            imgPath: "https://dimg.donga.com/a/600/0/90/5/ugc/CFC/D0/01/59/CFCD0015902120000000.jpg",
-            address: "서울 중구 을지로 30",
-            websiteLink: "https://map.naver.com/search/롯데호텔 서울",
-            description: "서울 중심부에 위치한 럭셔리 호텔입니다.",
-            likeCount: 75,
-            liked: true // 테스트용으로 하나 true
-        },
-        {
-            id: 202,
-            name: "히든클리프 호텔앤네이쳐",
-            imgPath: "https://media.expedia.com/hotels/25000000/24060000/24056600/24056586/14352b57_z.jpg",
-            address: "제주 서귀포시 예래해안로 542",
-            websiteLink: "https://map.naver.com/search/히든클리프 호텔앤네이쳐",
-            description: "자연 속에서 편안함을 즐길 수 있는 제주 호텔.",
-            likeCount: 92,
-            liked: false
-        },
-        {
-            id: 203,
-            name: "코모도호텔 경주",
-            imgPath: "https://www.lottehotel.com/content/dam/lotte-hotel/lotte/gyeongju/rooms/double/180718-35-2000-roo-LHRJ.jpg.thumb.1920.1920.jpg",
-            address: "경북 경주시 보문로 427",
-            websiteLink: "https://map.naver.com/search/코모도호텔 경주",
-            description: "보문단지에 위치한 전통미와 현대미가 어우러진 호텔.",
-            likeCount: 58,
-            liked: true // 테스트용으로 하나 true
-        }
-    ];
-
     document.addEventListener('DOMContentLoaded', () => {
+        // --- 페이징 및 데이터 관련 전역 변수 ---
+        const ITEMS_PER_PAGE = 5;
+        let likedData = { courses: [], restaurants: [], accommodations: [] };
+        let currentPage = { course: 1, restaurant: 1, accommodation: 1 };
+
         // DOM 요소 가져오기
         const headerUsernameSpan = document.getElementById('header-username');
         const likedCoursesNicknameSpan = document.getElementById('liked-courses-nickname');
-
-        // 탭 관련 DOM 요소
+        const logoutBtn = document.getElementById('logout-btn');
         const tabs = {
-            course:        document.getElementById('tab-course'),
-            restaurant:    document.getElementById('tab-restaurant'),
+            course: document.getElementById('tab-course'),
+            restaurant: document.getElementById('tab-restaurant'),
             accommodation: document.getElementById('tab-accommodation')
         };
         const contents = {
-            course:        document.getElementById('content-course'),
-            restaurant:    document.getElementById('content-restaurant'),
+            course: document.getElementById('content-course'),
+            restaurant: document.getElementById('content-restaurant'),
             accommodation: document.getElementById('content-accommodation')
         };
         const lists = {
-            course:        document.getElementById('liked-courses-list'),
-            restaurant:    document.getElementById('liked-restaurants-list'),
+            course: document.getElementById('liked-courses-list'),
+            restaurant: document.getElementById('liked-restaurants-list'),
             accommodation: document.getElementById('liked-accommodations-list')
         };
-        const noDataMessages = {
-            course:        document.getElementById('no-liked-courses-course'),
-            restaurant:    document.getElementById('no-liked-courses-restaurant'),
-            accommodation: document.getElementById('no-liked-courses-accommodation')
+        const paginations = {
+            course: document.getElementById('pagination-course'),
+            restaurant: document.getElementById('pagination-restaurant'),
+            accommodation: document.getElementById('pagination-accommodation')
         };
-
+        const noDataMessages = {
+            course: document.getElementById('no-liked-items-course'),
+            restaurant: document.getElementById('no-liked-items-restaurant'),
+            accommodation: document.getElementById('no-liked-items-accommodation')
+        };
         const detailModal = document.getElementById('detail-modal');
         const closeModalBtn = document.getElementById('close-modal');
         const modalImg = document.getElementById('modal-img');
         const modalTitle = document.getElementById('modal-title');
         const modalLikeCount = document.getElementById('modal-like-count');
         const modalDesc = document.getElementById('modal-desc');
-        const modalLikeBtn = document.getElementById('modal-like-btn'); // 모달 내 좋아요 버튼
-
         const passwordChangeForm = document.getElementById('password-change-form');
         const currentPasswordInput = document.getElementById('current-password');
         const newPasswordInput = document.getElementById('new-password');
         const confirmNewPasswordInput = document.getElementById('confirm-new-password');
 
-
-        // --- 1. 사용자 정보 가져오기 및 표시 ( /my API 호출 ) ---
+        // --- 사용자 정보 가져오기 ---
         async function fetchUserInfo() {
             try {
-                const response = await fetch('/my'); // 사용자 정보 API 엔드포인트
+                const response = await fetch('/my');
                 if (response.ok) {
                     const userInfo = await response.json();
-                    if (userInfo.username) {
-                        headerUsernameSpan.textContent = `${userInfo.username}님`;
-                    }
-                    if (userInfo.nickname) {
-                        likedCoursesNicknameSpan.textContent = `${userInfo.nickname}님이`;
-                    } else {
-                        likedCoursesNicknameSpan.textContent = `내가`; // 닉네임 없으면 기본값
-                    }
+                    headerUsernameSpan.textContent = `${userInfo.username || '사용자'}님`;
+                    likedCoursesNicknameSpan.textContent = `${userInfo.nickname || '나'}님이`;
                 } else if (response.status === 401 || response.status === 403) {
-                    // 인증 실패 또는 세션 만료 시
-                    alert('로그인이 필요하거나 세션이 만료되었습니다. 다시 로그인해주세요.');
-                    window.location.href = '/login-page'; // 로그인 페이지로 리다이렉트
-                } else {
-                    console.error("사용자 정보 로드 실패:", response.status, await response.text());
-                    headerUsernameSpan.textContent = `방문자님`; // 에러 시 기본값
-                    likedCoursesNicknameSpan.textContent = `내가`;
+                    alert('로그인이 필요하거나 세션이 만료되었습니다.');
+                    window.location.href = '/login-page';
                 }
             } catch (error) {
-                console.error("사용자 정보 로드 네트워크 에러:", error);
-                headerUsernameSpan.textContent = `방문자님`; // 네트워크 에러 시 기본값
-                likedCoursesNicknameSpan.textContent = `내가`;
+                console.error("사용자 정보 로드 중 에러:", error);
             }
         }
 
-        // --- 좋아요 목록 렌더링 함수 ---
-        function renderLikedList(list, type) {
-            const container = lists.hasOwnProperty(type) ? lists[type] : null;
-            const noDataMsg = noDataMessages.hasOwnProperty(type) ? noDataMessages[type] : null;
-
-            if (!container || !noDataMsg) {
-                console.error('Invalid type provided for rendering liked list:', type);
-                return;
+        // --- 좋아요 목록 데이터 가져오기 ---
+        async function fetchLikedItems() {
+            try {
+                const response = await fetch('/my/like');
+                if (!response.ok) throw new Error(`API 호출 실패: ${response.status}`);
+                const data = await response.json();
+                likedData = {
+                    courses: data.courses || [],
+                    restaurants: data.restaurants || [],
+                    accommodations: data.accommodations || []
+                };
+                activateTab('course'); // 데이터 로드 후 초기 탭 활성화
+            } catch (error) {
+                console.error("좋아요 목록 가져오기 실패:", error);
+                Object.values(noDataMessages).forEach(msg => msg.classList.remove('hidden'));
             }
+        }
 
-            container.innerHTML = ''; // 기존 목록 초기화
+        // --- 목록 및 페이징 렌더링 함수 ---
+        function renderPage(type) {
+            const list = likedData[type + 's']; // 'course' -> 'courses'
+            const container = lists[type];
+            const noDataMsg = noDataMessages[type];
+            const page = currentPage[type];
+
+            container.innerHTML = '';
+            paginations[type].innerHTML = '';
+
             if (!list || list.length === 0) {
                 noDataMsg.classList.remove('hidden');
                 return;
-            } else {
-                noDataMsg.classList.add('hidden');
             }
+            noDataMsg.classList.add('hidden');
 
-            list.forEach(item => {
+            const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE);
+            const startIndex = (page - 1) * ITEMS_PER_PAGE;
+            const endIndex = page * ITEMS_PER_PAGE;
+            const paginatedItems = list.slice(startIndex, endIndex);
+
+            renderCardList(paginatedItems, type, container);
+            renderPaginationControls(totalPages, type);
+        }
+
+        // --- 카드 목록 렌더링 ---
+        function renderCardList(items, type, container) {
+            items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'card'; // 모든 카드에 공통 card 클래스 적용
-
-                // 카드 HTML 구조 조건부 설정
+                card.className = 'card';
                 if (type === 'course') {
-                    // 여행코스 카드 (가로 배치, 상세보기 버튼만)
                     card.innerHTML = `
-                        <img src="${item.imgPath || '/images/default.png'}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0" onerror="this.onerror=null;this.src='/images/default.png';">
+                        <img src="${item.imgPath || '/images/default.png'}" alt="${item.name}" onerror="this.src='/images/default.png';">
                         <div class="p-3 flex flex-col justify-between flex-1">
-                            <div>
-                                <h4 class="font-medium text-black">${item.name}</h4>
-                                </div>
+                            <div><h4 class="font-medium text-black line-clamp-1">${item.name}</h4></div>
                             <div class="action-buttons">
                                 <button class="view-detail-btn">상세보기</button>
                             </div>
-                        </div>
-                    `;
-                    // 상세보기 버튼 이벤트
-                    card.querySelector('.view-detail-btn').addEventListener('click', () => {
-                        openMyPageModal(item); // 코스만 모달 띄우기
-                    });
+                        </div>`;
+                    card.querySelector('.view-detail-btn').addEventListener('click', () => openMyPageModal(item));
                 } else {
-                    // 식당/숙소 카드 (가로 배치, 웹사이트 보기 버튼만)
-                    const websiteSearchUrl = item.address
-                        ? `https://map.naver.com/search/${encodeURIComponent(item.name + ' ' + item.address)}`
-                        : `https://map.naver.com/search/${encodeURIComponent(item.name)}`;
-
+                    const websiteLink = item.websiteLink || `https://map.naver.com/search/${encodeURIComponent(item.name)}`;
                     card.innerHTML = `
-                        <img src="${item.imgPath || '/images/default.png'}" alt="${item.name}" class="w-32 h-32 object-cover flex-shrink-0" onerror="this.onerror=null;this.src='/images/default.png';">
+                        <img src="${item.imgPath || '/images/default.png'}" alt="${item.name}" onerror="this.src='/images/default.png';">
                         <div class="p-3 flex flex-col justify-between flex-1">
                             <div>
-                                <h4 class="font-medium text-black">${item.name}</h4>
-                                <p class="text-gray-600 text-xs line-clamp-1">${item.address || '주소 정보 없음'}</p>
+                                <h4 class="font-medium text-black line-clamp-1">${item.name}</h4>
+                                <p class="text-gray-600 text-xs line-clamp-1">${item.region || '주소 정보 없음'}</p>
                             </div>
                             <div class="action-buttons">
-                                <a href="${websiteSearchUrl}" target="_blank" class="website-link-btn text-xs px-2 py-1 rounded">웹사이트 보기</a>
-
+                                <a href="${websiteLink}" target="_blank" class="website-link-btn">웹사이트 보기</a>
                             </div>
-                        </div>
-                    `;
-                    // 웹사이트 보기 버튼은 <a> 태그로 직접 링크를 걸었으므로 별도의 이벤트 리스너 불필요
+                        </div>`;
                 }
-
-
                 container.appendChild(card);
-
-                // 좋아요 버튼 이벤트 (UI-only for dummy data) - 코스, 식당, 숙소 공통
-                const likeButton = card.querySelector('.like-btn');
-                const likeCountSpan = likeButton.querySelector('.like-count');
-                likeButton.addEventListener('click', () => {
-                    item.liked = !item.liked;
-                    likeButton.classList.toggle('liked', item.liked);
-
-                    let currentCount = parseInt(likeCountSpan.textContent || '0', 10);
-                    likeCountSpan.textContent = item.liked ? currentCount + 1 : currentCount - 1;
-
-                    console.log(`Like button for ${type} with ID ${item.id} clicked. Liked: ${item.liked}`);
-                });
-
-                // 공유 버튼 이벤트 (기능 없음 - 콘솔 로그) - 코스, 식당, 숙소 공통
-                card.querySelector('.share-btn').addEventListener('click', () => {
-                    console.log(`Share button for ${type} with ID ${item.id} clicked.`);
-                });
             });
+        }
+
+        // --- 페이징 컨트롤 렌더링 ---
+        function renderPaginationControls(totalPages, type) {
+            if (totalPages <= 1) return;
+            const paginationContainer = paginations[type];
+            const page = currentPage[type];
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '이전';
+            prevBtn.className = 'page-btn';
+            prevBtn.disabled = page === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage[type] > 1) {
+                    currentPage[type]--;
+                    renderPage(type);
+                }
+            });
+            paginationContainer.appendChild(prevBtn);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.className = 'page-btn';
+                if (i === page) pageBtn.classList.add('active');
+                pageBtn.addEventListener('click', () => {
+                    currentPage[type] = i;
+                    renderPage(type);
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = '다음';
+            nextBtn.className = 'page-btn';
+            nextBtn.disabled = page === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage[type] < totalPages) {
+                    currentPage[type]++;
+                    renderPage(type);
+                }
+            });
+            paginationContainer.appendChild(nextBtn);
         }
 
         // --- 탭 활성화 함수 ---
-        function activateTab(name) {
+        function activateTab(type) {
             Object.keys(tabs).forEach(key => {
-                if (tabs[key]) {
-                    tabs[key].classList.toggle('active', key === name);
-                }
-                if (contents[key]) {
-                    contents[key].classList.toggle('hidden', key !== name);
-                }
+                tabs[key]?.classList.toggle('active', key === type);
+                contents[key]?.classList.toggle('hidden', key !== type);
             });
+            currentPage[type] = 1; // 탭 변경 시 항상 첫 페이지로
+            renderPage(type);
+        }
 
-            // 선택된 탭에 따라 더미 데이터 렌더링
-            switch (name) {
-                case 'course':
-                    renderLikedList(dummyLikedCourses, 'course');
-                    break;
-                case 'restaurant':
-                    renderLikedList(dummyLikedRestaurants, 'restaurant');
-                    break;
-                case 'accommodation':
-                    renderLikedList(dummyLikedAccommodations, 'accommodation');
-                    break;
+        // --- 이벤트 리스너 등록 ---
+        Object.keys(tabs).forEach(key => {
+            tabs[key]?.addEventListener('click', () => activateTab(key));
+        });
+
+        // --- 로그아웃 로직 ---
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/logout', { method: 'POST' });
+                if (response.ok) {
+                    alert('로그아웃되었습니다.');
+                    window.location.href = '/login-page';
+                } else {
+                    alert('로그아웃에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('로그아웃 중 네트워크 오류:', error);
+                alert('로그아웃 중 오류가 발생했습니다.');
             }
-        }
+        });
 
-        // --- 탭 버튼 이벤트 리스너 추가 ---
-        if (tabs.course) {
-            tabs.course.addEventListener('click', () => activateTab('course'));
-        }
-        if (tabs.restaurant) {
-            tabs.restaurant.addEventListener('click', () => activateTab('restaurant'));
-        }
-        if (tabs.accommodation) {
-            tabs.accommodation.addEventListener('click', () => activateTab('accommodation'));
-        }
-
-
-        // --- 3. 로그아웃 버튼 이벤트 리스너 (기존 로직 유지) ---
-        const logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async (e) => {
-                e.preventDefault();
-
-                try {
-                    const response = await fetch('/logout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        alert(data.message || '로그아웃되었습니다.');
-                        window.location.href = '/login-page'; // 로그인 페이지로 이동
-                    } else {
-                        const errorData = await response.json();
-                        alert('로그아웃 처리 중 오류가 발생했습니다: ' + (errorData.message || response.statusText));
-                        console.error('로그아웃 실패:', response.status, errorData);
-                    }
-                } catch (error) {
-                    console.error('로그아웃 요청 중 네트워크 오류:', error);
-                    alert('네트워크 오류로 로그아웃에 실패했습니다. 다시 시도해주세요.');
-                }
-            });
-        }
-
-        // --- 4. 비밀번호 변경 폼 제출 이벤트 리스너 (기존 로직 유지) ---
+        // --- 비밀번호 변경 로직 ---
         if (passwordChangeForm) {
             function validateNewPassword() {
                 if (newPasswordInput.value !== confirmNewPasswordInput.value) {
@@ -567,92 +377,59 @@
 
             passwordChangeForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-
                 validateNewPassword();
                 if (!passwordChangeForm.checkValidity()) {
                     passwordChangeForm.reportValidity();
                     return;
                 }
 
-                const currentPassword = currentPasswordInput.value;
-                const updatePassword = newPasswordInput.value;
-
                 try {
                     const response = await fetch('/my/password', {
                         method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            currentPassword: currentPassword,
-                            updatePassword: updatePassword
+                            currentPassword: currentPasswordInput.value,
+                            updatePassword: newPasswordInput.value
                         })
                     });
 
                     if (response.ok) {
                         alert('비밀번호가 성공적으로 변경되었습니다. 다시 로그인해주세요.');
-                        window.location.href = '/login-page'; // 로그인 페이지로 이동
+                        window.location.href = '/login-page';
                     } else if (response.status === 401 || response.status === 403) {
-                        alert('로그인이 필요하거나 세션이 만료되었습니다. 다시 로그인해주세요.');
-                        window.location.href = '/login-page'; // 로그인 페이지로 이동
+                        alert('로그인이 필요하거나 세션이 만료되었습니다.');
+                        window.location.href = '/login-page';
                     } else {
                         const errorData = await response.json();
-                        alert('비밀번호 변경 실패: ' + (errorData.message || '알 수 없는 오류가 발생했습니다.'));
-                        console.error('비밀번호 변경 실패:', response.status, errorData);
+                        alert(`비밀번호 변경 실패: ${errorData.message || '알 수 없는 오류'}`);
                     }
                 } catch (error) {
-                    console.error('비밀번호 변경 요청 중 네트워크 오류:', error);
-                    alert('네트워크 오류로 비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
+                    console.error('비밀번호 변경 중 네트워크 오류:', error);
+                    alert('비밀번호 변경 중 오류가 발생했습니다.');
                 }
             });
         }
 
-        // --- 마이페이지용 모달 열기 함수 ---
-        // 코스에서만 호출되며, 모달에 설명을 표시
+        // --- 모달 관련 함수 및 이벤트 ---
         window.openMyPageModal = function(detail) {
             modalImg.src = detail.imgPath || '/images/default.png';
             modalTitle.textContent = detail.name;
-            modalLikeCount.textContent = detail.likeCount !== undefined ? detail.likeCount : 'N/A';
-            modalDesc.textContent = detail.description || '설명이 없습니다.'; // 설명은 모달에서만 표시
-
-            // 모달 좋아요 버튼의 초기 상태를 아이템의 liked 상태에 따라 설정
-            if (detail.liked) {
-                modalLikeBtn.classList.add('text-red-500');
-                modalLikeBtn.classList.remove('text-gray-600');
-            } else {
-                modalLikeBtn.classList.remove('text-red-500');
-                modalLikeBtn.classList.add('text-gray-600');
-            }
-            modalLikeBtn.classList.add('cursor-default'); // 모달 내 좋아요 버튼은 클릭 불가
-
+            modalLikeCount.textContent = detail.likeCount ?? 0;
+            modalDesc.textContent = detail.description || '설명이 없습니다.';
             detailModal.style.display = 'flex';
         };
-
-        // 모달 닫기 이벤트
-        closeModalBtn.addEventListener('click', () => {
-            detailModal.style.display = 'none';
-        });
-
-        // 모달 배경 클릭으로 닫기
+        closeModalBtn.addEventListener('click', () => detailModal.style.display = 'none');
         detailModal.addEventListener('click', (e) => {
-            if (e.target === detailModal) {
-                detailModal.style.display = 'none';
-            }
+            if (e.target === detailModal) detailModal.style.display = 'none';
         });
 
-        // 이미지 로드 실패 시 대체 이미지
-        document.body.addEventListener('error', function (e) {
-            const target = e.target;
-            if (target.tagName === 'IMG' && !target.dataset.defaulted) {
-                target.src = '/images/default.png';
-                target.dataset.defaulted = 'true';
-            }
-        }, true);
+        // --- 초기화 함수 호출 ---
+        async function initializePage() {
+            await fetchUserInfo();
+            await fetchLikedItems();
+        }
 
-
-        // --- 페이지 로드 시 모든 초기화 및 데이터 로드 함수 호출 ---
-        fetchUserInfo(); // 사용자 정보 먼저 로드
-        activateTab('course'); // 초기에는 '여행코스' 탭 활성화
+        initializePage();
     });
 </script>
 
