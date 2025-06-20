@@ -1,5 +1,6 @@
-package com.mujakjung.domain.attraction.accommodation;
+package com.mujakjung.domain.attraction.accommodation.service;
 
+import com.mujakjung.domain.attraction.accommodation.AccommodationMapper;
 import com.mujakjung.domain.attraction.accommodation.dto.AccommodationApiResponse;
 import com.mujakjung.domain.attraction.accommodation.entity.Accommodation;
 import com.mujakjung.domain.attraction.accommodation.repository.AccommodationRepository;
