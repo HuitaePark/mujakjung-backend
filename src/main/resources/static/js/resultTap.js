@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
           : `https://map.naver.com/search/${encodeURIComponent(item.name)}`;
 
       const card = document.createElement('div');
-      card.className = 'card flex overflow-hidden relative'; // 기존 클래스 유지
+      card.className = 'card flex overflow-hidden relative';
 
-      const itemId = item.id ?? item.contentId ?? item.attractionId; // ID 가져오기
-      const itemType = type; // 'restaurant' 또는 'accommodation'
+      const itemId = item.id ?? item.contentId ?? item.attractionId;
+      const itemType = type;
 
       if (itemId != null) card.dataset.id = String(itemId);
       card.dataset.type = String(itemType);
@@ -70,19 +70,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       container.appendChild(card);
 
-      // 좋아요 초기 상태 조회 후 스타일 반영
+      // --- 수정된 부분 ---
+      // 좋아요 초기 상태 조회 후 스타일과 카운트 반영
       if (itemId != null) {
-        fetch(`/${itemType}/${itemId}/like-status`) // 예: /restaurant/123/like-status
-            .then(res => res.json())
-            .then(status => {
-              if (status.liked) {
-                const likeBtn = card.querySelector('.like-btn');
+        fetch(`/${itemType}/${itemId}/like-status`)
+            .then(res => {
+              if (!res.ok) throw new Error('Like status fetch failed');
+              return res.json();
+            })
+            .then(dto => {
+              const likeBtn = card.querySelector('.like-btn');
+              const countSpan = card.querySelector('.like-count');
+              // API 응답 필드명 'totalLikes'로 변경, null일 경우 0으로 표시
+              countSpan.textContent = dto.totalLikes ?? 0;
+              // API 응답 필드명 'liked'로 변경
+              if (dto.liked) {
                 likeBtn.classList.remove('bg-red-200');
                 likeBtn.classList.add('bg-red-500', 'text-white');
-                likeBtn.disabled = true; // 이미 좋아요 눌렀으면 비활성화
+                likeBtn.disabled = true;
               }
             })
-            .catch(console.warn);
+            .catch(err => console.warn(`Could not fetch like status for ${itemType} ${itemId}:`, err));
       }
 
       // 좋아요 클릭 이벤트
@@ -92,28 +100,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = e.currentTarget;
         const countSpan = btn.querySelector('.like-count');
 
-        if (btn.disabled) return;
+        if (btn.disabled || !itemId) return;
 
         try {
-          const res = await fetch(`/${itemType}/${itemId}/like`, { method: 'POST' }); // 예: /restaurant/123/like
-          if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(`좋아요 요청 실패: ${errorText}`);
+          // 1. 로그인 여부 확인
+          const sessionCheck = await fetch('/my');
+          if (sessionCheck.status !== 200) {
+            alert('좋아요를 누르려면 먼저 로그인해주세요.');
+            return;
           }
 
-          const result = await res.json();
-          const totalLikes = result.totalLikes ?? (parseInt(countSpan.textContent || '0', 10) + 1);
+          // 2. 좋아요 API 호출
+          const res = await fetch(`/${itemType}/${itemId}/like`, { method: 'POST' });
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`좋아요 요청 실패: ${res.status} - ${errorText}`);
+          }
 
-          // UI 업데이트
+          const resultDto = await res.json();
+
+          // 3. UI 업데이트
+          // API 응답 필드명 'totalLikes'로 변경, null일 경우 0으로 표시
+          countSpan.textContent = resultDto.totalLikes ?? 0;
+
+          // 버튼의 스타일을 변경하고 비활성화합니다.
           btn.classList.remove('bg-red-200');
           btn.classList.add('bg-red-500', 'text-white');
-          countSpan.textContent = totalLikes;
           btn.disabled = true;
+
         } catch (err) {
           console.error(err);
-          alert('좋아요 처리 중 오류가 발생했습니다.');
+          alert('좋아요 처리 중 오류가 발생했습니다: ' + err.message);
         }
       });
+      // --- 수정 끝 ---
+
 
       // 공유 버튼 이벤트
       const shareBtn = card.querySelector('.share-btn');
@@ -123,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.shareItem({ ...item, dtoType: type });
         } else {
           console.error("shareItem 함수를 찾을 수 없습니다.");
-          alert('공유 기능은 아직 개발 중입니다!'); // 사용자에게 알림
+          alert('공유 기능은 아직 개발 중입니다!');
         }
       });
     });
@@ -133,27 +154,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3) 리스트 로드 함수 (캐시 활용 + API 호출 방지)
   function loadList(type) {
     const container = document.getElementById(`${type}-list`);
-    // 추천이 없으면 안내
     if (!window.lastRegion) {
       container.innerHTML = `
         <div class="text-center text-sm text-gray-500 py-6">
           아직 추천받은 ${type==='restaurant'?'식당':'숙소'}가 없어요.<br>
-          <span class="font-medium text-blue-600">[ 랜덤 여행지 추천 ]</span> 버튼을 눌러<br>여행 정보를 받아보세요!
+          <span class="font-medium text-blue-600">[ 랜덤 여행지 추천 ]</span> 버튼을 눌러<br>
+          여행 정보를 받아보세요!
         </div>`;
       return;
     }
 
-    // 캐시된 리스트가 있으면 바로 렌더
     const cacheKey = type === 'restaurant' ? 'lastRestaurantList' : 'lastAccommodationList';
     const cached = window[cacheKey];
 
     if (Array.isArray(cached) && cached.length > 0) {
-      window.renderList(cached, type); // window.renderList 사용
+      window.renderList(cached, type);
       return;
     }
 
-
-    // 데이터를 찾을 수 없는 경우 (예: 페이지 로드 후 '랜덤 여행지 추천' 버튼 누르지 않은 경우)
     container.innerHTML = `<p class="text-center text-gray-500">데이터를 불러오는 중입니다. 잠시만 기다려주세요.</p>`;
   }
 
@@ -167,8 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contents[key].classList.toggle('hidden', key !== name);
       }
     });
-    // '여행코스' 탭은 mapMarker.js에서 이미 렌더링하므로,
-    // '식당' 또는 '숙소' 탭이 활성화될 때만 loadList 호출
+
     if (name === 'restaurant' || name === 'accommodation') {
       loadList(name);
     }
@@ -185,6 +202,5 @@ document.addEventListener('DOMContentLoaded', () => {
     tabs.accommodation.addEventListener('click', () => activateTab('accommodation'));
   }
 
-  // 화면 로드 시 기본 탭 활성화
   activateTab('course');
 });

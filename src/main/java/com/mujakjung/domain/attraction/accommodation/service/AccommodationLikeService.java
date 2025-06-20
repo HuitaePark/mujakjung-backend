@@ -6,6 +6,7 @@ import com.mujakjung.domain.attraction.accommodation.repository.AccommodationLik
 import com.mujakjung.domain.attraction.accommodation.repository.AccommodationRepository;
 import com.mujakjung.domain.member.Member;
 import com.mujakjung.domain.member.MemberRepository;
+import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class AccommodationLikeService {
     private final AccommodationLikeRepository accommodationLikeRepository;
     private final AccommodationRepository accommodationRepository;
 
-
+    @Transactional
     public long likeAccommodation(Long accommodationId, String username) {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 유저입니다."));
