@@ -12,12 +12,12 @@ import com.mujakjung.domain.member.MemberRepository;
 import com.mujakjung.global.enums.MBTI;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @AllArgsConstructor
@@ -32,6 +32,7 @@ public class CourseService {
     /*
         랜덤 코스 조회 카테고리 메서드
     */
+    @Transactional(readOnly = true)
     public CourseApiResponse findCourse() {
         //랜덤으로 아무 코스나 선택
         Long courseId = courseRepository.findRandomCourseId();
@@ -45,6 +46,7 @@ public class CourseService {
     /*
         MBTI입력을 받아서 코스를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public CourseApiResponse findMbtiCourse(String type) {
 
         MBTI mbti = MBTI.fromString(type);
@@ -62,6 +64,7 @@ public class CourseService {
     /*
         Region입력을 받아서 코스를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public CourseApiResponse findRegionCourse(String area) {
 
         Long courseId = courseRepository.findRegionCourseId(area);
@@ -76,6 +79,7 @@ public class CourseService {
     /*
     계절별 코스를 조회하는 메서드
     */
+    @Transactional(readOnly = true)
     public CourseApiResponse findSummerCourse(String season) {
 
         Long courseId = courseRepository.findSeasonCourseId(season);
@@ -93,14 +97,16 @@ public class CourseService {
     /*
         코스를 받아서 세부 코스를 조회하는 메서드
     */
-    private List<CourseDetail> findDetailCourse(Long courseId) {
+    @Transactional(readOnly = true)
+    protected List<CourseDetail> findDetailCourse(Long courseId) {
         return courseDetailRepository.findByCourseId(courseId);
     }
 
     /*
         받은 세부코스들로 Response를 생성하는 메서드
     */
-    private CourseApiResponse makeResponse(Long id, List<DetailCourseResponseDto> list) {
+    @Transactional(readOnly = true)
+    protected CourseApiResponse makeResponse(Long id, List<DetailCourseResponseDto> list) {
 
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 코스"));
@@ -135,13 +141,14 @@ public class CourseService {
                 .orElse(0);
     }
 
+    @Transactional(readOnly = true)
     public boolean findLikeCourse(Long detailId,String username){
         Long memberId = memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("찾을수 없는 유저입니다.")).getId();
 
         return likeRepo.existsByCourseDetailIdAndMember_Id(detailId, memberId);
     }
 
-
+    @Transactional(readOnly = true)
     public long getLikeCount(Long detailId){
         // 좋아요 집계는 detail 테이블의 likeCount 칼럼이나
         // 또는 로그 테이블을 직접 조회해도 되고, 둘 중 하나를 선택
