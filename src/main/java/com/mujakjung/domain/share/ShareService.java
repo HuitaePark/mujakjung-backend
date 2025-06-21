@@ -21,6 +21,7 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -41,10 +42,12 @@ public class ShareService {
         handlerMap.put("RESTAURANT", this::findHotRestaurant);
     }
 
+    @Transactional
     public void saveAttraction(ShareDto dto) {
         Share share = findAttraction(dto);
         shareRepository.save(share);
     }
+    @Transactional(readOnly = true)
     @Cacheable(cacheNames = "hot", key = "#type.toUpperCase()")
     public HotAttractionDto findHotAttraction(String type){
 
@@ -62,8 +65,8 @@ public class ShareService {
 
 
 
-
-    private HotCourseDto findHotCourse(Long attractionId){
+    @Transactional(readOnly = true)
+    protected HotCourseDto findHotCourse(Long attractionId){
         CourseDetail detail = courseDetailRepository
                 .findById(attractionId)
                 .orElseThrow(() -> new IllegalArgumentException("없는 코스입니다."));
@@ -83,17 +86,20 @@ public class ShareService {
                 .build();
     }
 
-    private HotAccommodationDto findHotAccommodation(Long attractionId){
+    @Transactional(readOnly = true)
+    protected HotAccommodationDto findHotAccommodation(Long attractionId){
         Accommodation accommodation = accommodationRepository.findById(attractionId).orElseThrow(() -> new IllegalArgumentException("없는 숙소입니다."));
         return shareMapper.accommodationToDto(accommodation);
     }
 
-    private HotRestaurantDto findHotRestaurant(Long attractionId){
+    @Transactional(readOnly = true)
+    protected HotRestaurantDto findHotRestaurant(Long attractionId){
         Restaurant restaurant = restaurantRepository.findById(attractionId).orElseThrow(()->new IllegalArgumentException("없는 식당입니다."));
         return shareMapper.restaurantToDto(restaurant);
     }
 
-    private Share findAttraction(ShareDto dto){
+    @Transactional(readOnly = true)
+    protected Share findAttraction(ShareDto dto){
 
         String type = dto.getType().toUpperCase();
 
