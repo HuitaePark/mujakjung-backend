@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class RestaurantService {
     /*
         Region입력을 받아서 레스토랑을 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<RestaurantApiResponse> findRegionRestaurants(String area) {
         String[] strArr = area.split(" ");
         String regionName   = strArr[0];

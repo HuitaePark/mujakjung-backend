@@ -8,6 +8,7 @@ import com.mujakjung.domain.member.dto.JoinRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -15,6 +16,8 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Transactional
     public void join(JoinRequest joinRequest) throws IllegalAccessException {
 
         if(memberRepository.existsByUsername(joinRequest.getUsername())){

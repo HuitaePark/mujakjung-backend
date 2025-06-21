@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -25,11 +26,13 @@ public class MyPageService {
     private final MemberMapper mapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional(readOnly = true)
     public MypageDto getMyInfo(String username){
         Member member = memberRepository.findByUsername(username).orElseThrow(()-> new IllegalArgumentException("없는 유저 입니다."));
         return mapper.entityToDto(member);
     }
 
+    @Transactional(readOnly = true)
     public void updatePassword(PasswordRequest passwordRequest, String username) {
         Member member = memberRepository.findByUsername(username).orElseThrow(()->new IllegalArgumentException("유저를 찾을수 없습니다."));
         if(member.checkPassword(passwordRequest.getCurrentPassword(), bCryptPasswordEncoder)){
@@ -41,6 +44,7 @@ public class MyPageService {
         }
     }
 
+    @Transactional(readOnly = true)
     public LikeAttractionDto getMyLike(String username) {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));

@@ -6,11 +6,12 @@ import com.mujakjung.domain.attraction.restaurant.repository.RestaurantLikeRepos
 import com.mujakjung.domain.attraction.restaurant.repository.RestaurantRepository;
 import com.mujakjung.domain.member.Member;
 import com.mujakjung.domain.member.MemberRepository;
-import jakarta.transaction.Transactional;
+
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -49,7 +50,7 @@ public class RestaurantLikeService {
         return restaurant.getLikeCount() + 1;
     }
 
-
+    @Transactional(readOnly = true)
     public boolean findLikeRestaurant(Long restaurantId, String username) {
         Long memberId = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 유저입니다."))
@@ -57,7 +58,7 @@ public class RestaurantLikeService {
         return restaurantLikeRepository.existsByRestaurant_IdAndMember_Id(restaurantId, memberId);
     }
 
-
+    @Transactional(readOnly = true)
     public long getLikeCountRestaurant(Long restaurantId) {
         return restaurantRepository.findById(restaurantId)
                 .map(Restaurant::getLikeCount)

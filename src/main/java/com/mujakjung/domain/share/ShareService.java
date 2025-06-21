@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class ShareService {
     private final ShareRepository shareRepository;
-    private final CourseRepository courseRepository;
     private final RestaurantRepository restaurantRepository;
     private final AccommodationRepository accommodationRepository;
     private final CourseDetailRepository courseDetailRepository;
