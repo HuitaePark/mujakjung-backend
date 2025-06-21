@@ -6,11 +6,12 @@ import com.mujakjung.domain.attraction.accommodation.repository.AccommodationLik
 import com.mujakjung.domain.attraction.accommodation.repository.AccommodationRepository;
 import com.mujakjung.domain.member.Member;
 import com.mujakjung.domain.member.MemberRepository;
-import jakarta.transaction.Transactional;
+
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -51,7 +52,7 @@ public class AccommodationLikeService {
         return accommodation.getLikeCount() + 1;
     }
 
-
+    @Transactional(readOnly = true)
     public boolean findLikeAccommodation(Long accommodationId, String username) {
         Long memberId = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("찾을 수 없는 유저입니다."))
