@@ -46,6 +46,7 @@ public class ShareService {
         Share share = findAttraction(dto);
         shareRepository.save(share);
     }
+
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "hot", key = "#type.toUpperCase()")
     public HotAttractionDto findHotAttraction(String type){
